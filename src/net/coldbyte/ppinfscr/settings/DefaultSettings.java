@@ -16,4 +16,9 @@ public class DefaultSettings {
 	
 	public static final String 	regexDatedFolders	= "^[0-3]{0,1}[0-9]{1}\\.[0-1]{0,1}[0-9]{1}\\.[2-3]{1}[0-9]{3}";
 	
+	public static final String[] requiredDirs		= {	ppinfscrSources, 
+														ppinfscrOptSet, 
+														ppinfscrSysdir, 
+														ppinfscrOptSetFile};
+	public static final String[] requiredFiles		= {	ppinfscrOptSetFile};
 }

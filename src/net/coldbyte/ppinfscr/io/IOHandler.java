@@ -1,6 +1,7 @@
 package net.coldbyte.ppinfscr.io;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +49,33 @@ public class IOHandler {
 		}else{
 			return false;
 		}
+	}
+	
+	/**
+	 * Use this to create every file you need if it doesn't exist
+	 * it will return false if there was any error
+	 * @param fullpaths
+	 * @return
+	 */
+	public boolean createRequired(String[] dirsPath, String[] filesPath){
+		try {
+			for(String path : dirsPath){
+				File onefile = new File(path);
+				if(!onefile.isDirectory()){
+					onefile.mkdirs();
+				}
+			}
+			for(String path : filesPath){
+				File onefile = new File(path);
+				if(!onefile.isFile()){
+					onefile.createNewFile();
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 	
