@@ -30,7 +30,7 @@ public class MainThread {
 	 */
 	public void start(){
 		if (io.createRequired(DefaultSettings.requiredDirs, DefaultSettings.requiredFiles)){
-			
+			out.cOut("End of dev");
 		}else{
 			out.cOut("Could not create required files and folders. Please check the base base path of the application and make sure you have write access to them");
 		}

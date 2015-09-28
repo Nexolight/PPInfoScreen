@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.coldbyte.ppinfscr.ui.Output;
+
 /**
  *
  * (C) 2015 - Lucy von Känel
@@ -13,6 +15,8 @@ import java.util.List;
  *
  */
 public class IOHandler {
+	
+	private Output out = new Output(this.getClass().getName());
 	
 	/**
 	 * Use this class to handle the files where this program accesses to
@@ -62,12 +66,14 @@ public class IOHandler {
 			for(String path : dirsPath){
 				File onefile = new File(path);
 				if(!onefile.isDirectory()){
+					out.cOut("Folder: " + onefile + " does not exist - I will create it");
 					onefile.mkdirs();
 				}
 			}
 			for(String path : filesPath){
 				File onefile = new File(path);
 				if(!onefile.isFile()){
+					out.cOut("File: " + onefile + " does not exist - I will create it");
 					onefile.createNewFile();
 				}
 			}
