@@ -1,10 +1,16 @@
 package net.coldbyte.ppinfscr.io;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.coldbyte.ppinfscr.main.Main;
 import net.coldbyte.ppinfscr.ui.Output;
 
 /**
@@ -84,5 +90,45 @@ public class IOHandler {
 		return true;
 	}
 	
-	
+	/**
+	 * This will extract the given file into the given location
+	 * @param filename
+	 * @return
+	 */
+	public boolean extractTemplate(String filename, String dst){
+		InputStream in = getClass().getResourceAsStream("/templates/"+filename);
+		
+		if(in == null){
+			out.cOut("Template file in jar /templates/"+filename + " does not exist");
+			return false;
+		}
+		File mydst = new File(dst);
+		if(mydst.getParentFile().exists()){
+			if(!mydst.exists()){
+				try {
+					OutputStream bout;
+					bout = new FileOutputStream(dst);
+					byte[] buffer = new byte[1024];
+					int len = in.read(buffer);
+					while(len != -1){
+						bout.write(buffer, 0, len);
+						len = in.read(buffer);
+					}
+					in.close();
+					bout.close();
+				} catch (IOException e) {
+					out.cOut("Cannot create / write " + dst);
+					e.printStackTrace();
+					return false;
+				}
+				out.cOut("Extracted template " + filename + " to " + dst);
+				return true;
+			}else{
+				return true;
+			}
+		}else{
+			out.cOut("Required folder does not exist " + mydst.getParentFile().getPath());
+			return false;
+		}
+	}
 }

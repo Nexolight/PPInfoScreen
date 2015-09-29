@@ -29,8 +29,14 @@ public class MainThread {
 	 * Start the program you have to call this after the constructor
 	 */
 	public void start(){
-		if (io.createRequired(DefaultSettings.requiredDirs, DefaultSettings.requiredFiles)){
-			out.cOut("End of dev");
+		prepare();
+	}
+	
+	private void prepare(){
+		if (io.createRequired(DefaultSettings.requiredDirs, DefaultSettings.requiredFiles) &&
+			io.extractTemplate("settingsTemplate.txt", DefaultSettings.ppinfscrOptSetFile) &&
+			io.extractTemplate("example.pptx", DefaultSettings.ppinfscrOptTmpl)){
+			out.cOut("Successfully created all required files");
 		}else{
 			out.cOut("Could not create required files and folders. Please check the base base path of the application and make sure you have write access to them");
 		}
