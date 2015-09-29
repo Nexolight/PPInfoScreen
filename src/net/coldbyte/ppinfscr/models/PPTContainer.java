@@ -1,6 +1,7 @@
 package net.coldbyte.ppinfscr.models;
 
 import java.io.File;
+import java.util.Date;
 
 /**
  *
@@ -9,32 +10,39 @@ import java.io.File;
  * See COPYING.txt
  *
  */
-public class PPTContainer {
+public class PPTContainer implements Comparable<PPTContainer>{
 	
-	private File myPPT;
-	private File me;
+	private File container;
+	private Date date;
 	
 	/**
-	 * This represents a powerpoint file container including it's file
+	 * This represents a valid named PowerPoint container including the date
+	 * @param container
+	 * @param date
 	 */
-	public PPTContainer(File myPPT, File me){
-		this.myPPT = myPPT;
-		this.me = me;
+	public PPTContainer(File container, Date date){
+		this.container = container;
+		this.date = date;
 	}
 
-	public File getMyPPT() {
-		return myPPT;
+	public File getContainer() {
+		return container;
 	}
 
-	public void setMyPPT(File myPPT) {
-		this.myPPT = myPPT;
+	public void setContainer(File container) {
+		this.container = container;
 	}
 
-	public File getMe() {
-		return me;
+	public Date getDate() {
+		return date;
 	}
 
-	public void setMe(File me) {
-		this.me = me;
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	@Override
+	public int compareTo(PPTContainer pptc) {
+		return -1 * this.date.compareTo(pptc.getDate());
 	}
 }

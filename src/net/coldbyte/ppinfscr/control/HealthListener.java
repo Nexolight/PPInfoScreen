@@ -4,6 +4,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import net.coldbyte.ppinfscr.interfaces.IfHealthListener;
+import net.coldbyte.ppinfscr.io.IOHandler;
+import net.coldbyte.ppinfscr.settings.DefaultSettings;
+import net.coldbyte.ppinfscr.ui.Output;
 
 /**
 *
@@ -14,15 +17,18 @@ import net.coldbyte.ppinfscr.interfaces.IfHealthListener;
 */
 public abstract class HealthListener implements IfHealthListener{
 	
-	protected final TimerTask timertask;
-	protected final Timer timer;
+	private final IOHandler io = new IOHandler();
+	private final HealthListener inst = this;
+	private Output out = new Output(this.getClass().getName());
+	private boolean killtoggle = false;
+	private Timer mysrvTimer;
 	
 	/**
 	 * Use this class to keep the program structure clean
 	 */
 	public HealthListener(){
-		this.timertask = createHealthService();
-		this.timer = new Timer();
+		this.mysrvTimer = new Timer();
+		createHealthService(this.mysrvTimer);
 	}
 
 	
@@ -31,7 +37,7 @@ public abstract class HealthListener implements IfHealthListener{
 	 * intact while executing
 	 * @return
 	 */
-	private TimerTask createHealthService(){
+	private void createHealthService(Timer t){
 		TimerTask mysrv = new TimerTask(){
 			
 			@Override
@@ -41,7 +47,15 @@ public abstract class HealthListener implements IfHealthListener{
 			}
 			
 		};
-		return mysrv;
+		//t.scheduleAtFixedRate(mysrv, 0, DefaultSettings.datedFoldersLookupDelay);
+	}
+	
+	/**
+	 * Use this to properly exit the listener thread
+	 */
+	protected void killThread(){
+		this.killtoggle = true;
+		this.mysrvTimer.cancel();
 	}
 
 }

@@ -7,10 +7,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import net.coldbyte.ppinfscr.main.Main;
+import net.coldbyte.ppinfscr.models.PPTContainer;
+import net.coldbyte.ppinfscr.settings.DefaultSettings;
 import net.coldbyte.ppinfscr.ui.Output;
 
 /**
@@ -32,19 +37,125 @@ public class IOHandler {
 	}
 	
 	/**
-	 * This will return the absolute path from each directory within the given one
+	 * This will return the File objects from each directory within the given basepath
 	 * @param basepath
 	 * @return
 	 */
 	public List<File> getDirs(String basepath){
 		List<File> dirlist = new ArrayList<File>();
-		File myFile = new File(basepath);
-		for(File oneDir : myFile.listFiles()){
+		File dir = new File(basepath);
+		for(File oneDir : dir.listFiles()){
 			if(oneDir.isDirectory()){
 				dirlist.add(oneDir);
 			}
 		}
 		return dirlist;
+	}
+	
+	/**
+	 * This will return the File objects from each file within the given basepath
+	 * @param basepath
+	 * @return
+	 */
+	public List<File> getFiles(String basepath){
+		List<File> filelist = new ArrayList<File>();
+		File dir = new File(basepath);
+		for(File oneFile : dir.listFiles()){
+			if(oneFile.isFile()){
+				filelist.add(oneFile);
+			}
+		}
+		return filelist;
+	}
+	
+	/**
+	 * This will return the File objects from each file and directory within the given basepath
+	 * @param basepath
+	 * @return
+	 */
+	public List<File> getAll(String basepath){
+		List<File> list = new ArrayList<File>();
+		File dir = new File(basepath);
+		for(File obj : dir.listFiles()){
+			if(obj.isFile() || obj.isDirectory()){
+				list.add(obj);
+			}
+		}
+		return list;
+	}
+	
+	/**
+	 * This will return all supported PowerPoint files within the given directory
+	 * @param basedir
+	 * @param removeInvalid
+	 * @return
+	 */
+	public List<File> getPPTFiles(File basedir, boolean removeInvalid){
+		List<File> allfiles = getAll(basedir.getAbsolutePath());
+		List<File> pptfiles = new ArrayList<File>();
+		for(File onefile : allfiles){
+			if(onefile.isFile()){
+				if(onefile.getName().matches(DefaultSettings.validPPTRegex)){
+					pptfiles.add(onefile);
+				}else{
+					if(removeInvalid){
+						out.cOut("The format of the file " + onefile.getName() + " is not supported - remove");
+						onefile.delete();
+					}else{
+						out.cOut("The format of the file " + onefile.getName() + " is not supported");
+					}
+				}
+			}else{
+				if(removeInvalid){
+					out.cOut("The Directory " + onefile.getAbsolutePath() + " is not a file - remove");
+					onefile.delete();
+				}else{
+					out.cOut("The Directory " + onefile.getAbsolutePath() + " is not a file");
+				}
+			}
+		}
+		return pptfiles;
+	}
+	
+	/**
+	 * This will validate all PowerPoint source directories which exist
+	 * and return them in their valid container format
+	 * @param removeInvalid true if you want to delete any invalid file inside the depending directory
+	 * @return
+	 */
+	public List<PPTContainer> getPPTContainers(boolean removeInvalid){
+		List<PPTContainer> validated = new ArrayList<PPTContainer>();
+		SimpleDateFormat datedfolderformat = new SimpleDateFormat(DefaultSettings.datedFoldersFormat);
+		List<File> dirs = getAll(DefaultSettings.ppinfscrSources);
+		for(File dir : dirs){
+			if(dir.isDirectory()){
+				String dname = dir.getName();
+				if(dname.matches(DefaultSettings.datedFoldersRegex)){
+					try {
+						Date date = datedfolderformat.parse(dname);
+						PPTContainer pptc = new PPTContainer(dir, date);
+						validated.add(pptc);
+					} catch (ParseException e) {
+						if(removeInvalid){
+							out.cOut("Cannot parse foldername: " + dname + " - remove directory from " + dir.getParentFile().getAbsolutePath());
+							dir.delete();
+						}else{
+							out.cOut("Cannot parse foldername: " + dname);
+						}
+						e.printStackTrace();
+					}
+				}
+			}else{
+				if(removeInvalid){
+					out.cOut("The file " + dir.getAbsolutePath() + " is not a directory - remove");
+					dir.delete();
+				}else{
+					out.cOut("The file " + dir.getAbsolutePath() + " is not a directory");
+				}
+				
+			}
+		}
+		return validated;
 	}
 	
 	/**

@@ -1,5 +1,6 @@
 package net.coldbyte.ppinfscr.control;
 
+import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -82,25 +83,19 @@ public class MainThread{
 		UpdateListener update = new UpdateListener(){
 
 			@Override
-			public void onFileUpdated(String fullpath) {
+			public void onContainerUpdated(File old, File updated) {
 				// TODO Auto-generated method stub
 				
 			}
 
 			@Override
-			public void onFileRemoved(String fullpath) {
+			public void onFileUpdated(File old, File updated) {
 				// TODO Auto-generated method stub
 				
 			}
 
 			@Override
-			public void onDoCloseAll(String fullpath) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onDoDisplayNew(String fullpath) {
+			public void onDoCloseAll() {
 				// TODO Auto-generated method stub
 				
 			}
