@@ -64,7 +64,8 @@ public class MainThread{
 	 * depending on the current structure
 	 */
 	private void runServices(){
-		HealthListener health = new HealthListener(){
+		
+		final HealthListener health = new HealthListener(){
 
 			@Override
 			public void onStructureChange() {
@@ -80,7 +81,29 @@ public class MainThread{
 			
 		};
 		
-		UpdateListener update = new UpdateListener(){
+		final PPBot ppbot = new PPBot(){
+
+			@Override
+			public void readyToLoad() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void readyToReaload() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void readyToClose() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		};
+		
+		final UpdateListener update = new UpdateListener(){
 
 			@Override
 			public void onContainerUpdated(File old, File updated) {
@@ -98,7 +121,6 @@ public class MainThread{
 					oldstr = old.getName();
 				}
 				out.cOut("Latest file ("+oldstr+") was updated new one is: " + updated.getName());
-				
 			}
 
 			@Override
@@ -107,6 +129,8 @@ public class MainThread{
 			}
 			
 		};
+		
+		
+		
 	}
-	
 }

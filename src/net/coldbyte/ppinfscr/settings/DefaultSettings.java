@@ -1,16 +1,18 @@
 package net.coldbyte.ppinfscr.settings;
 
+import java.util.List;
+
 public class DefaultSettings {
 	
 	public static final long	slidePause 		= 10000;
 	public static final long	checkForNew		= 5000;
 	
 	public static final String	ppinfscrRoot	= "Z:/";
-	public static final String	ppinfscrSources = ppinfscrRoot 					+ "/InformationScreen/";
-	public static final String 	ppinfscrOptSet	= ppinfscrRoot 					+ "/OptionalSettings/";
-	public static final String 	ppinfscrSysdir	= ppinfscrRoot 					+ "/SystemStuff_DontTouch/";
-	public static final String	ppinfscrTmpldir = ppinfscrSources 				+ "/01.01.2015_1830/";
-	public static final String	ppexeLocation	= System.getenv("ProgramFiles") + "/Microsoft Office/Office14/POWERPNT.EXE";
+	public static final String	ppinfscrSources = ppinfscrRoot 		+ "/InformationScreen/";
+	public static final String 	ppinfscrOptSet	= ppinfscrRoot 		+ "/OptionalSettings/";
+	public static final String 	ppinfscrSysdir	= ppinfscrRoot 		+ "/SystemStuff_DontTouch/";
+	public static final String	ppinfscrTmpldir = ppinfscrSources 	+ "/01.01.2015_1830/";
+	public static final String	ppexeLocation	= "\"C:\\Program Files (x86)\\Microsoft Office\\Office14\\POWERPNT.EXE\"";
 	
 	public static final String 	ppinfscrOptSetFile 	= ppinfscrOptSet + "optionalSettings.inf";
 	public static final String 	ppinfscrOptTmpl 	= ppinfscrTmpldir + "example.pptx";
@@ -29,4 +31,7 @@ public class DefaultSettings {
 	public static final String[] requiredFiles		= {};
 	
 	public static final long datedFoldersLookupDelay = 5000;
+	public static final long ppexeStateLookupDelay = 1000;
+	
+	public static final String ppexeStartupCmds = ppexeLocation + " -S [pptfile]"; //[pptfile] will be replaced automatically
 }

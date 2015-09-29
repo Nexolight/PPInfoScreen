@@ -49,18 +49,33 @@ public abstract class UpdateListener implements IfUpdateListener{
 	private void createUpdateService(Timer t){
 		TimerTask mysrv = new TimerTask(){
 			private List<PPTContainer> sortedContainers = new ArrayList<PPTContainer>();
+			private PPTContainer containerOfInterest;
 			private PPTContainer latestContainer;
+			private long now = new Date().getTime();
 			private List<File> containerFiles = new ArrayList<File>();
 			private File latestFile;
 			private long latestFileModified; //File seems to be only a reference to the physical file so after it's gone every call returns null
 			@Override
 			public void run() {
 				if(!inst.killtoggle){
+					this.now = new Date().getTime();
 					this.sortedContainers = io.getPPTContainers(true);
 					Collections.sort(this.sortedContainers);
+					
+					
 					if(this.sortedContainers.size() > 0){
+						//Check current container
 						
-						//Check latest container
+						
+						
+						//take the one which is the current one not the latest
+						//so the relevant content is displayed...
+						
+						//containerOfInterest = this.sortedContainers.get(0);
+						for(int i = 0; i < this.sortedContainers.size(); i++){
+							
+						}
+						
 						if(!this.sortedContainers.get(0).equals(this.latestContainer)){
 							if(this.latestContainer == null){
 								onContainerUpdated(null, this.sortedContainers.get(0).getContainer());
@@ -72,24 +87,19 @@ public abstract class UpdateListener implements IfUpdateListener{
 							this.latestContainer = this.sortedContainers.get(0);
 						}
 						
-						//Check files inside the latest container
+						//Check files inside the current container
 						this.containerFiles = io.getPPTFiles(this.latestContainer.getContainer(), true);
 						if(this.containerFiles.size() > 0){
 							if(	Helper.pptDiff(this.containerFiles.get(0), this.latestFile) || 		//It should compare names
 								this.containerFiles.get(0).lastModified() != latestFileModified){ 	//last modified would be 0 when the file doesn't exist anymore
-								
 								onFileUpdated(this.latestFile, this.containerFiles.get(0));
 								this.latestFile = containerFiles.get(0);
 								this.latestFileModified = containerFiles.get(0).lastModified();
-								
 							}
 						}
-						
-						
 					}else{
 						onDoCloseAll();
 					}
-					
 				}
 			}
 		};

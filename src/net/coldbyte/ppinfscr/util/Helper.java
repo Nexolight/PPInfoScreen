@@ -2,6 +2,8 @@ package net.coldbyte.ppinfscr.util;
 
 import java.io.File;
 
+import net.coldbyte.ppinfscr.settings.DefaultSettings;
+
 /**
  *
  * (C) 2015 - Lucy von Känel
@@ -37,5 +39,9 @@ public class Helper {
 		}else{
 			return false;
 		}
+	}
+	
+	public static String getPPStartupCmd(String fullpath){
+		return DefaultSettings.ppexeStartupCmds.replace("[pptfile]", "\""+fullpath+"\"");
 	}
 }
