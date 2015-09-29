@@ -84,20 +84,26 @@ public class MainThread{
 
 			@Override
 			public void onContainerUpdated(File old, File updated) {
-				// TODO Auto-generated method stub
-				
+				String oldstr = "null";
+				if(old != null){
+					oldstr = old.getName();
+				}
+				out.cOut("Latest container ("+oldstr+") was updated new one is: " + updated.getName());
 			}
 
 			@Override
 			public void onFileUpdated(File old, File updated) {
-				// TODO Auto-generated method stub
+				String oldstr = "null";
+				if(old != null){
+					oldstr = old.getName();
+				}
+				out.cOut("Latest file ("+oldstr+") was updated new one is: " + updated.getName());
 				
 			}
 
 			@Override
 			public void onDoCloseAll() {
-				// TODO Auto-generated method stub
-				
+				out.cOut("No files or directories found - close everything");
 			}
 			
 		};

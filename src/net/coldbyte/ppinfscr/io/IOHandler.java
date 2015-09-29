@@ -144,6 +144,8 @@ public class IOHandler {
 						}
 						e.printStackTrace();
 					}
+				}else{
+					out.cOut("Remove wrong named directory: " + dir.getName());
 				}
 			}else{
 				if(removeInvalid){
@@ -152,7 +154,6 @@ public class IOHandler {
 				}else{
 					out.cOut("The file " + dir.getAbsolutePath() + " is not a directory");
 				}
-				
 			}
 		}
 		return validated;

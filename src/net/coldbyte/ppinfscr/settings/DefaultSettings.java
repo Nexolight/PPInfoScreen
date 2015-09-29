@@ -16,9 +16,9 @@ public class DefaultSettings {
 	public static final String 	ppinfscrOptTmpl 	= ppinfscrTmpldir + "example.pptx";
 	public static final String	ppinfscrSysdirTmpPP	= ppinfscrSysdir + "currently_displayed";
 	
-	public static final String 	datedFoldersRegex	= "^[0-3]{0,1}[0-9]{1}\\.[0-1]{0,1}[0-9]{1}\\.[2-3]{1}[0-9]{3}$";
+	public static final String 	datedFoldersRegex	= "^[0-3]{0,1}[0-9]{1}\\.[0-1]{0,1}[0-9]{1}\\.[2-3]{1}[0-9]{3}_[0-2]{0,1}[0-9]{1}[0-5]{0,1}[0-9]{1}$";
 	public static final String	datedFoldersFormat	= "dd.mm.yyyy_HHmm";
-	public static final String	validPPTRegex		= "^.*\\.[ppt,pptx]$";
+	public static final String	validPPTRegex		= "^.*\\.(ppt|pptx)$";
 	
 	public static final String[] requiredDirs		= {	ppinfscrSources, 
 														ppinfscrOptSet, 

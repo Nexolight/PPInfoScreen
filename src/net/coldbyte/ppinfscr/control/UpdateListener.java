@@ -15,6 +15,7 @@ import net.coldbyte.ppinfscr.io.IOHandler;
 import net.coldbyte.ppinfscr.models.PPTContainer;
 import net.coldbyte.ppinfscr.settings.DefaultSettings;
 import net.coldbyte.ppinfscr.ui.Output;
+import net.coldbyte.ppinfscr.util.Helper;
 
 /**
  *
@@ -37,6 +38,7 @@ public abstract class UpdateListener implements IfUpdateListener{
 	public UpdateListener(){
 		this.mysrvTimer = new Timer();
 		createUpdateService(this.mysrvTimer);
+		out.cOut("Started thread");
 	}
 	
 	/**
@@ -50,25 +52,36 @@ public abstract class UpdateListener implements IfUpdateListener{
 			private PPTContainer latestContainer;
 			private List<File> containerFiles = new ArrayList<File>();
 			private File latestFile;
+			private long latestFileModified; //File seems to be only a reference to the physical file so after it's gone every call returns null
 			@Override
 			public void run() {
 				if(!inst.killtoggle){
-					sortedContainers = io.getPPTContainers(true);
-					Collections.sort(sortedContainers);
-					
-					if(sortedContainers.size() > 0){
+					this.sortedContainers = io.getPPTContainers(true);
+					Collections.sort(this.sortedContainers);
+					if(this.sortedContainers.size() > 0){
 						
-						if(sortedContainers.get(0) != this.latestContainer){
-							onContainerUpdated(this.latestContainer.getContainer(), sortedContainers.get(0).getContainer());
-							this.latestContainer = sortedContainers.get(0);
+						//Check latest container
+						if(!this.sortedContainers.get(0).equals(this.latestContainer)){
+							if(this.latestContainer == null){
+								onContainerUpdated(null, this.sortedContainers.get(0).getContainer());
+							}else{
+								out.cOut(this.latestContainer.getContainer());
+								out.cOut(this.sortedContainers.get(0).getContainer());
+								onContainerUpdated(this.latestContainer.getContainer(), this.sortedContainers.get(0).getContainer());
+							}
+							this.latestContainer = this.sortedContainers.get(0);
 						}
 						
-						
+						//Check files inside the latest container
 						this.containerFiles = io.getPPTFiles(this.latestContainer.getContainer(), true);
 						if(this.containerFiles.size() > 0){
-							if(this.containerFiles.get(0) != this.latestFile){ //Only one the first file in a container will be taken
+							if(	Helper.pptDiff(this.containerFiles.get(0), this.latestFile) || 		//It should compare names
+								this.containerFiles.get(0).lastModified() != latestFileModified){ 	//last modified would be 0 when the file doesn't exist anymore
+								
 								onFileUpdated(this.latestFile, this.containerFiles.get(0));
 								this.latestFile = containerFiles.get(0);
+								this.latestFileModified = containerFiles.get(0).lastModified();
+								
 							}
 						}
 						
