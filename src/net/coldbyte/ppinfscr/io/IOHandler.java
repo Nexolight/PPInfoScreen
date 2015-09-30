@@ -7,7 +7,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.net.URL;
+import java.nio.channels.FileChannel;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
@@ -48,59 +51,25 @@ public class IOHandler {
 	 * @return
 	 */
 	public File copyToTmp(File file, boolean randomName){
-		boolean ok = false;
 		if(file.isFile()){	
 			String filename = file.getName();
 			if(randomName){
 				filename = UUID.randomUUID().toString();
 			}
 			File dst = new File(DefaultSettings.ppinfscrSysdir + filename);
-			
-			
-			InputStream is = null;
-		    OutputStream os = null;
-			if(dst.exists()){
-				removeAll(dst);
-			}
 			try {
-				dst.createNewFile();
-			} catch (IOException e1) {
-				out.cOut("Cannot create empty file "+dst.getAbsolutePath()+" to write into");
-				e1.printStackTrace();
-				return null;
-			}
-			try{
-		        try {
-		        	is = new FileInputStream(file);
-					os = new FileOutputStream(dst);
-			        byte[] buffer = new byte[1024];
-			        int length;
-			        while ((length = is.read(buffer)) > 0) {
-			            os.write(buffer, 0, length);
-			        }
-		        } catch (FileNotFoundException e) {
-					out.cOut("Cannot copy file one not found - source: " + file.getAbsolutePath() + " destination: " + dst.getAbsolutePath());
-					e.printStackTrace();
-					return null;
-				} catch (IOException e) {
-					out.cOut("Cannot copy file from source: " + file.getAbsolutePath() + " to destination: " + dst.getAbsolutePath() + " IOException");
-					e.printStackTrace();
-					return null;
-				}
-			}finally{
-				try {
-					is.close();
-					os.close();
-					ok = true;
-				} catch (IOException e) {
-					out.cOut("Cannot close FileInput or FileOutput stream - IOException");
-					e.printStackTrace();
-					return null;
-				}
-			}
-			if(ok){
+				RandomAccessFile rf = new RandomAccessFile(file, "r");
+				FileChannel bin = rf.getChannel();
+				FileOutputStream dest = new FileOutputStream(dst);
+				FileChannel bout = dest.getChannel();
+				long size = bin.size();
+				bin.transferTo(0, size, bout);
+				bin.close();
+				bout.close();
 				return dst;
-			}else{
+			} catch (IOException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
 				return null;
 			}
 		}else{
