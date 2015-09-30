@@ -50,8 +50,9 @@ public class MainThread{
 	 */
 	private boolean prepare(){
 		if (io.createRequired(DefaultSettings.requiredDirs, DefaultSettings.requiredFiles) &&
-			io.extractTemplate("settingsTemplate.txt", DefaultSettings.ppinfscrOptSetFile) &&
-			io.extractTemplate("example.pptx", DefaultSettings.ppinfscrOptTmpl)){
+			io.extractTemplate(DefaultSettings.ppinfscrOptSetFile, DefaultSettings.ppinfscrOptSetFile) &&
+			io.extractTemplate(DefaultSettings.ppinfscrOptTmpl, DefaultSettings.ppinfscrOptTmpl) &&
+			io.extractTemplate(DefaultSettings.ppinfscrSetFile, DefaultSettings.ppinfscrSetFile)){
 			out.cOut("Successfully created all required files");
 			return true;
 		}else{

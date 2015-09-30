@@ -1,9 +1,11 @@
 package net.coldbyte.ppinfscr.io;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -23,6 +25,7 @@ import java.util.UUID;
 import net.coldbyte.ppinfscr.main.Main;
 import net.coldbyte.ppinfscr.models.PPTContainer;
 import net.coldbyte.ppinfscr.settings.DefaultSettings;
+import net.coldbyte.ppinfscr.settings.UserSettings.Settings;
 import net.coldbyte.ppinfscr.ui.Output;
 
 /**
@@ -305,6 +308,39 @@ public class IOHandler {
 		}else{
 			out.cOut("Required folder does not exist " + mydst.getParentFile().getPath());
 			return false;
+		}
+	}
+	
+	/**
+	 * read out the given setting from the defined settings file
+	 * @param setting
+	 * @return
+	 */
+	public String readSetting(Settings setting){
+		File ini = new File("settings.ini");
+		if(ini.exists() && ini.isFile()){
+			try {
+				BufferedReader br = new BufferedReader(new FileReader(ini));
+				String line = null;
+				while ((line = br.readLine()) != null) {
+					line = line.replaceAll(" ", "");
+					if(line.matches("^"+setting.name()+"=.*")){
+						return line.split("=")[1];
+					}
+				}
+				br.close();
+			} catch (FileNotFoundException e) {
+				out.cOut("Cannot read setting " + setting.name() + " FileNotFoundException");
+				e.printStackTrace();
+				return null;
+			} catch (IOException e) {
+				out.cOut("Cannot read setting " + setting.name() + " IOException");
+				e.printStackTrace();
+				return null;
+			}
+			return null;
+		}else{
+			return null;
 		}
 	}
 }
