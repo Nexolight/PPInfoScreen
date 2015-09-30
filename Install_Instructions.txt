@@ -1,0 +1,20 @@
+
+	This is for advanced users basic users read the /templates/example.pptx
+
+	1.0 Requirements:
+	-------------------------------------------------------------------------------------
+	--> You must install java 7 or later
+	--> You must install PowerPoint 2007 or later
+	--> You must setup PowerPoint on the server to loop the presentations.
+	--> You must change the constants in net.coldbyte.ppinfscr.settings.DefaultSettings
+
+	1.1 Hint:
+	-------------------------------------------------------------------------------------
+	--> Use a network share and use this one as root folder for the program
+
+	2.0 Installation
+	-------------------------------------------------------------------------------------
+	--> None just start the jar together with windows and make sure the 
+	--> application has write access to the app root folder
+	
+	

@@ -1,5 +1,8 @@
 package net.coldbyte.ppinfscr.control;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -46,6 +49,30 @@ public abstract class PPBot implements IfPPBot{
 	public PPBot(){
 		this.mysrvTimer = new Timer();
 		startPPStatus(this.mysrvTimer);
+		startClicker(this.mysrvTimer);
+	}
+	
+	/**
+	 * This will click through the slides
+	 * @param t
+	 */
+	private void startClicker(Timer t){
+		TimerTask mysrv = new TimerTask(){
+			private Robot mybot;
+			@Override
+			public void run() {
+				if(inst.mystate == PPBotState.BUSY){
+					try {
+						this.mybot = new Robot();
+						this.mybot.keyPress(KeyEvent.VK_RIGHT);
+					} catch (AWTException e) {
+						out.cOut("Cannot perform a click/keystroke - AWTException");
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		t.schedule(mysrv, 0, DefaultSettings.ppNextActionDelay);
 	}
 	
 	

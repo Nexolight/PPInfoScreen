@@ -35,4 +35,7 @@ public class DefaultSettings {
 	
 	public static final String ppexeStartupCmds 		= ppexeLocation + " -S [pptfile]"; //[pptfile] will be replaced automatically
 	public static final String[] tasklistCmds 			= {"cmd.exe", "/C", "tasklist.exe | find [ppexe] /I"}; //[ppexe] will be replaced automatically
+
+	public static final long ppNextActionDelay			= 8000; //ms
+	
 }
