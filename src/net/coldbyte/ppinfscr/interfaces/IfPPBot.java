@@ -1,5 +1,7 @@
 package net.coldbyte.ppinfscr.interfaces;
 
+import net.coldbyte.ppinfscr.control.PPBot.PPBotState;
+
 /**
  *
  * (C) 2015 - Lucy von Känel
@@ -9,17 +11,7 @@ package net.coldbyte.ppinfscr.interfaces;
  */
 public interface IfPPBot {
 	/**
-	 * This will be called when the process is started up the first time
+	 * This will be called whenever the state of the PPBot has changed
 	 */
-	public void readyToLoad();
-	
-	/**
-	 * This will be called if the process is ready to reload a new file
-	 */
-	public void readyToReaload();
-	
-	/**
-	 * This will be called if the process is ready to close the opened file
-	 */
-	public void readyToClose();
+	public void stateChanged(PPBotState oldstate, PPBotState newstate);
 }

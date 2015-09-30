@@ -31,11 +31,16 @@ public abstract class UpdateListener implements IfUpdateListener{
 	private Output out = new Output(this.getClass().getName());
 	private boolean killtoggle = false;
 	private Timer mysrvTimer;
+	public enum ContainerOfInterest{
+		LATEST, INTIME, SPECIFIED
+	}
+	private final ContainerOfInterest coi;
 	
 	/**
 	 * Use this class to keep track of updates in the program structure
 	 */
-	public UpdateListener(){
+	public UpdateListener(ContainerOfInterest coi){
+		this.coi = coi;
 		this.mysrvTimer = new Timer();
 		createUpdateService(this.mysrvTimer);
 		out.cOut("Started thread");
@@ -49,59 +54,165 @@ public abstract class UpdateListener implements IfUpdateListener{
 	private void createUpdateService(Timer t){
 		TimerTask mysrv = new TimerTask(){
 			private List<PPTContainer> sortedContainers = new ArrayList<PPTContainer>();
-			private PPTContainer containerOfInterest;
-			private PPTContainer latestContainer;
-			private long now = new Date().getTime();
-			private List<File> containerFiles = new ArrayList<File>();
-			private File latestFile;
-			private long latestFileModified; //File seems to be only a reference to the physical file so after it's gone every call returns null
+				
+			private PPTContainer usedContainer;
+			private File usedFile;
+			private long usedFileModified;
+			private PPTContainer reqContainer;
+			private File reqFile;
+
 			@Override
 			public void run() {
 				if(!inst.killtoggle){
-					this.now = new Date().getTime();
-					this.sortedContainers = io.getPPTContainers(true);
-					Collections.sort(this.sortedContainers);
-					
-					
+					updateContainersAndFiles();
 					if(this.sortedContainers.size() > 0){
-						//Check current container
 						
-						
-						
-						//take the one which is the current one not the latest
-						//so the relevant content is displayed...
-						
-						//containerOfInterest = this.sortedContainers.get(0);
-						for(int i = 0; i < this.sortedContainers.size(); i++){
-							
+						if(isDifferentContainer()){
+							switchContainer();
 						}
 						
-						if(!this.sortedContainers.get(0).equals(this.latestContainer)){
-							if(this.latestContainer == null){
-								onContainerUpdated(null, this.sortedContainers.get(0).getContainer());
-							}else{
-								out.cOut(this.latestContainer.getContainer());
-								out.cOut(this.sortedContainers.get(0).getContainer());
-								onContainerUpdated(this.latestContainer.getContainer(), this.sortedContainers.get(0).getContainer());
-							}
-							this.latestContainer = this.sortedContainers.get(0);
+						if(isDifferentFile()){
+							switchFile();
 						}
 						
-						//Check files inside the current container
-						this.containerFiles = io.getPPTFiles(this.latestContainer.getContainer(), true);
-						if(this.containerFiles.size() > 0){
-							if(	Helper.pptDiff(this.containerFiles.get(0), this.latestFile) || 		//It should compare names
-								this.containerFiles.get(0).lastModified() != latestFileModified){ 	//last modified would be 0 when the file doesn't exist anymore
-								onFileUpdated(this.latestFile, this.containerFiles.get(0));
-								this.latestFile = containerFiles.get(0);
-								this.latestFileModified = containerFiles.get(0).lastModified();
-							}
-						}
 					}else{
 						onDoCloseAll();
 					}
 				}
 			}
+			
+			/**
+			 * This will update and resort the container as well as the currently requested container and files
+			 */
+			private void updateContainersAndFiles(){
+				this.sortedContainers = io.getPPTContainers(true);
+				Collections.sort(this.sortedContainers);
+				this.reqContainer = getContainerOfInterest(inst.coi);
+				this.reqFile = getFile(this.reqContainer);
+			}
+			
+			/**
+			 * This will return the container of interest given in the super class it's constructor
+			 * @param coi
+			 * @return
+			 */
+			private PPTContainer getContainerOfInterest(ContainerOfInterest coi){
+				if (coi == ContainerOfInterest.INTIME){
+					PPTContainer finalOne = null;
+					long now = new Date().getTime();
+					for(int i = 0; i < this.sortedContainers.size(); i++){
+						if(now >= this.sortedContainers.get(i).getDate().getTime()){
+							finalOne = this.sortedContainers.get(i); //this works because the list is sorted
+							break;
+						}
+					}
+					return finalOne;
+					
+				}else if (coi == ContainerOfInterest.SPECIFIED){
+					
+					//Implement optional user settings
+					
+				}else{ 	//ContainerOfInterest.LATEST
+					if(this.sortedContainers.size() > 0){
+						return this.sortedContainers.get(0);
+					}
+				}
+				return null; //no container found
+			}
+			
+			/**
+			 * This will return the first file inside a PPTContainer
+			 * @param container
+			 * @return
+			 */
+			private File getFile(PPTContainer container){
+				if(container == null){
+					return null;
+				}
+				List<File> files = io.getPPTFiles(container.getContainer(), true);
+				if (files.size() > 0){
+					return files.get(0);
+				}else{
+					return null;
+				}
+			}
+			
+			/**
+			 * Checks if reqContainer and usedContainer are different
+			 * @return
+			 */
+			private boolean isDifferentContainer(){
+				if(this.usedContainer == null && this.reqContainer != null){
+					return true;
+				}
+				if(this.usedContainer != null && this.reqContainer == null){
+					return true;
+				}
+				if(this.usedContainer == null && this.reqContainer == null){
+					return false;
+				}
+				if(!this.usedContainer.equals(this.reqContainer)){
+					return true;
+				}
+				return false;
+			}
+			
+			/**
+			 * Checks if reqFile and usedFile are different
+			 * @return
+			 */
+			private boolean isDifferentFile(){
+				if(this.usedFile == null && this.reqFile != null){
+					return true;
+				}
+				if(this.usedFile != null && this.reqFile == null){
+					return true;
+				}
+				if(this.usedFile == null && this.reqFile == null){
+					return false;
+				}
+				if(!this.usedFile.getName().equals(this.reqFile.getName())){
+					return true;
+				}
+				if(this.usedFileModified != this.reqFile.lastModified()){
+					return true;
+				}
+				return false;
+			}
+			
+			/**
+			 * Changes the local variable usedContainer to reqContainer and calls the callback
+			 */
+			private void switchContainer(){
+				File oldC = null, newC = null;
+				if(this.usedContainer != null){
+					oldC = this.usedContainer.getContainer();
+				}
+				if(this.reqContainer != null){
+					newC = this.reqContainer.getContainer();
+				}
+				onContainerUpdated(oldC, newC);
+				this.usedContainer = this.reqContainer;
+			}
+			
+			/**
+			 * Changes the local variable usedFile together with it's modified date to reqFile and calls the callback
+			 */
+			private void switchFile(){
+				File oldF = null, newF = null;
+				if(this.usedFile != null){
+					oldF = this.usedFile;
+				}
+				if(this.reqFile != null){
+					newF = this.reqFile;
+				}
+				onFileUpdated(oldF, newF);
+				this.usedFile = this.reqFile;
+				if(this.reqFile != null){
+					this.usedFileModified = this.reqFile.lastModified(); //workaround it would be missing when removed and it's used to check for file updates
+				}
+			}
+			
 		};
 		t.scheduleAtFixedRate(mysrv, 0, DefaultSettings.datedFoldersLookupDelay);
 	}

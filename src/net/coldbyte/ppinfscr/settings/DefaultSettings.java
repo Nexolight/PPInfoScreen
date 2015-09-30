@@ -19,7 +19,7 @@ public class DefaultSettings {
 	public static final String	ppinfscrSysdirTmpPP	= ppinfscrSysdir + "currently_displayed";
 	
 	public static final String 	datedFoldersRegex	= "^[0-3]{0,1}[0-9]{1}\\.[0-1]{0,1}[0-9]{1}\\.[2-3]{1}[0-9]{3}_[0-2]{0,1}[0-9]{1}[0-5]{0,1}[0-9]{1}$";
-	public static final String	datedFoldersFormat	= "dd.mm.yyyy_HHmm";
+	public static final String	datedFoldersFormat	= "dd.MM.yyyy_HHmm";
 	public static final String	validPPTRegex		= "^.*\\.(ppt|pptx)$";
 	
 	public static final String[] requiredDirs		= {	ppinfscrSources, 
@@ -28,10 +28,11 @@ public class DefaultSettings {
 														ppinfscrOptSetFile,
 														ppinfscrTmpldir};
 	
-	public static final String[] requiredFiles		= {};
+	public static final String[] requiredFiles			= {};
 	
-	public static final long datedFoldersLookupDelay = 5000;
-	public static final long ppexeStateLookupDelay = 1000;
+	public static final long datedFoldersLookupDelay 	= 5000; //ms
+	public static final long ppexeStateLookupDelay 		= 3000; //ms
 	
-	public static final String ppexeStartupCmds = ppexeLocation + " -S [pptfile]"; //[pptfile] will be replaced automatically
+	public static final String ppexeStartupCmds 		= ppexeLocation + " -S [pptfile]"; //[pptfile] will be replaced automatically
+	public static final String[] tasklistCmds 			= {"cmd.exe", "/C", "tasklist.exe | find [ppexe] /I"}; //[ppexe] will be replaced automatically
 }

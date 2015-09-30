@@ -15,6 +15,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import net.coldbyte.ppinfscr.interfaces.IfPPBot;
+import net.coldbyte.ppinfscr.io.IOHandler;
 import net.coldbyte.ppinfscr.settings.DefaultSettings;
 import net.coldbyte.ppinfscr.ui.Output;
 import net.coldbyte.ppinfscr.util.Helper;
@@ -27,10 +28,16 @@ import net.coldbyte.ppinfscr.util.Helper;
  *
  */
 public abstract class PPBot implements IfPPBot{
-	
+	private final IOHandler io = new IOHandler();
 	private final Output out = new Output(this.getClass().getName());
 	private boolean killtoggle = false;
+	private PPBot inst = this;
 	private Timer mysrvTimer;
+	public enum PPBotState{
+		READY, BUSY, INIT, ERROR
+	}
+	private PPBotState mystate = PPBotState.INIT;
+	private List<File> fileQuerys = new ArrayList<File>();
 
 	/**
 	 * This is a simple Power Point bot for windows
@@ -47,11 +54,71 @@ public abstract class PPBot implements IfPPBot{
 	 */
 	private void startPPStatus(Timer t){
 		TimerTask mysrv = new TimerTask(){
-
+			
+			private ProcessBuilder pbTskl = new ProcessBuilder(Helper.getPPProcessCmd());
+			private Process processTskl;
+			private BufferedReader stdinTskl, stderrTskl;
+			
+			private ProcessBuilder pbPP;
+			private Process processPP; 
+			private BufferedReader stdinPP, stderrPP;
+			
+			private File openedFile;
+			
 			@Override
 			public void run() {
 				if(!killtoggle){
+					try {
+						this.processTskl = this.pbTskl.start();
+						this.stdinTskl = new BufferedReader(new InputStreamReader(this.processTskl.getInputStream())); //dont remove it will block
+						this.stderrTskl = new BufferedReader(new InputStreamReader(this.processTskl.getErrorStream())); //dont remove it will block
+						String outputTskl = this.stdinTskl.readLine();
+						this.processTskl.destroy();
+						if(outputTskl != null){
+							if(inst.mystate != PPBotState.BUSY){
+								stateChanged(inst.mystate, PPBotState.BUSY);
+								inst.mystate = PPBotState.BUSY;
+							}
+							
+						}
+						if(outputTskl == null){
+							if(inst.mystate != PPBotState.READY){
+								stateChanged(inst.mystate, PPBotState.READY);
+								inst.mystate = PPBotState.READY;
+							}
+						}
+						if(inst.fileQuerys.size() > 0){
+							if(inst.mystate == PPBotState.BUSY){
+								this.processPP.destroy();
+								io.removeAll(this.openedFile);
+							}
+							if(inst.mystate == PPBotState.READY){
+								this.openedFile = inst.fileQuerys.get(fileQuerys.size() -1);
+								inst.fileQuerys = new ArrayList<File>();//remove all queries
+								try{
+									String cmds = Helper.getPPStartupCmd(openedFile.getAbsolutePath());
+									this.pbPP = new ProcessBuilder(cmds);
+									this.processPP = this.pbPP.start();
+									this.stdinPP = new BufferedReader(new InputStreamReader(this.processPP.getInputStream())); //dont remove it will block
+									this.stderrPP = new BufferedReader(new InputStreamReader(this.processPP.getErrorStream())); //dont remove it will block
+								} catch (IOException e) {
+									out.cOut("Cannot start PowerPoint - IOExeption");
+									e.printStackTrace();
+								}
+							}
+						}
+					} catch (IOException e) {
+						if(inst.mystate != PPBotState.ERROR){
+							stateChanged(inst.mystate, PPBotState.ERROR);
+							inst.mystate = PPBotState.ERROR;
+						}
+						out.cOut("Cannot start tasklist - IOExeption");
+						e.printStackTrace();
+					}
 					
+					if(inst.mystate == PPBotState.INIT){
+						inst.mystate = PPBotState.READY;
+					}
 				}
 			}
 			
@@ -72,17 +139,7 @@ public abstract class PPBot implements IfPPBot{
 	 * @param f
 	 */
 	protected void openNew(File f){
-		try{
-			String cmd = Helper.getPPStartupCmd(f.getAbsolutePath());
-			out.cOut(cmd);
-			ProcessBuilder pb = new ProcessBuilder(cmd);
-			//final Map<String,String> env = pb.environment();
-			final Process process = pb.start();
-			//final BufferedReader stdin = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			//final BufferedReader stderr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-		} catch (IOException e) {
-			out.cOut("Cannot start PowerPoint - IOExeption");
-			e.printStackTrace();
-		}
+		File tmp = io.copyToTmp(f, true);
+		this.fileQuerys.add(tmp); //Thread will handle this and remove it at the end
 	}
 }

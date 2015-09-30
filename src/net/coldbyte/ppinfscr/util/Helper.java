@@ -44,4 +44,11 @@ public class Helper {
 	public static String getPPStartupCmd(String fullpath){
 		return DefaultSettings.ppexeStartupCmds.replace("[pptfile]", "\""+fullpath+"\"");
 	}
+	
+	public static String[] getPPProcessCmd(){
+		String processname = new File(DefaultSettings.ppexeLocation).getName().replace("\"", "").replace("'", "");
+		String[] ret = DefaultSettings.tasklistCmds;
+		ret[2] = ret[2].replace("[ppexe]", "\""+processname+"\"");
+		return ret;
+	}
 }

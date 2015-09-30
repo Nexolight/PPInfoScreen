@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.coldbyte.ppinfscr.control.UpdateListener.ContainerOfInterest;
 import net.coldbyte.ppinfscr.interfaces.IfHealthListener;
 import net.coldbyte.ppinfscr.interfaces.IfUpdateListener;
 import net.coldbyte.ppinfscr.io.IOHandler;
@@ -84,43 +85,38 @@ public class MainThread{
 		final PPBot ppbot = new PPBot(){
 
 			@Override
-			public void readyToLoad() {
-				// TODO Auto-generated method stub
+			public void stateChanged(PPBotState oldstate, PPBotState newstate) {
+				out.cOut("PPBot changed state from: " + oldstate.name() + " to: " + newstate.name());
 				
 			}
 
-			@Override
-			public void readyToReaload() {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void readyToClose() {
-				// TODO Auto-generated method stub
-				
-			}
-			
 		};
 		
-		final UpdateListener update = new UpdateListener(){
+		final UpdateListener update = new UpdateListener(ContainerOfInterest.INTIME){
 
 			@Override
 			public void onContainerUpdated(File old, File updated) {
-				String oldstr = "null";
+				String oldstr = "null", newstr = "null";
 				if(old != null){
 					oldstr = old.getName();
 				}
-				out.cOut("Latest container ("+oldstr+") was updated new one is: " + updated.getName());
+				if(updated != null){
+					newstr = updated.getName();
+				}
+				out.cOut("Latest container ("+oldstr+") was updated new one is: " + newstr);
 			}
 
 			@Override
 			public void onFileUpdated(File old, File updated) {
-				String oldstr = "null";
+				String oldstr = "null", newstr = "null";
 				if(old != null){
 					oldstr = old.getName();
 				}
-				out.cOut("Latest file ("+oldstr+") was updated new one is: " + updated.getName());
+				if(updated != null){
+					newstr = updated.getName();
+				}
+				out.cOut("Latest file ("+oldstr+") was updated new one is: " + newstr);
+				ppbot.openNew(updated);
 			}
 
 			@Override

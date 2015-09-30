@@ -1,17 +1,21 @@
 package net.coldbyte.ppinfscr.io;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import net.coldbyte.ppinfscr.main.Main;
 import net.coldbyte.ppinfscr.models.PPTContainer;
@@ -34,6 +38,75 @@ public class IOHandler {
 	 */
 	public IOHandler(){
 		
+	}
+	
+	
+	/**
+	 * This will copy the given file into the temporary folder and return it's new Object
+	 * @param file
+	 * @param randomName
+	 * @return
+	 */
+	public File copyToTmp(File file, boolean randomName){
+		boolean ok = false;
+		if(file.isFile()){	
+			String filename = file.getName();
+			if(randomName){
+				filename = UUID.randomUUID().toString();
+			}
+			File dst = new File(DefaultSettings.ppinfscrSysdir + filename);
+			
+			
+			InputStream is = null;
+		    OutputStream os = null;
+			if(dst.exists()){
+				removeAll(dst);
+			}
+			try {
+				dst.createNewFile();
+			} catch (IOException e1) {
+				out.cOut("Cannot create empty file "+dst.getAbsolutePath()+" to write into");
+				e1.printStackTrace();
+				return null;
+			}
+			try{
+		        try {
+		        	is = new FileInputStream(file);
+					os = new FileOutputStream(dst);
+			        byte[] buffer = new byte[1024];
+			        int length;
+			        while ((length = is.read(buffer)) > 0) {
+			            os.write(buffer, 0, length);
+			        }
+		        } catch (FileNotFoundException e) {
+					out.cOut("Cannot copy file one not found - source: " + file.getAbsolutePath() + " destination: " + dst.getAbsolutePath());
+					e.printStackTrace();
+					return null;
+				} catch (IOException e) {
+					out.cOut("Cannot copy file from source: " + file.getAbsolutePath() + " to destination: " + dst.getAbsolutePath() + " IOException");
+					e.printStackTrace();
+					return null;
+				}
+			}finally{
+				try {
+					is.close();
+					os.close();
+					ok = true;
+				} catch (IOException e) {
+					out.cOut("Cannot close FileInput or FileOutput stream - IOException");
+					e.printStackTrace();
+					return null;
+				}
+			}
+			if(ok){
+				return dst;
+			}else{
+				return null;
+			}
+		}else{
+			out.cOut("The given File " + file.getAbsolutePath() + " is a folder - I will not copy");
+			return null;
+		}
 	}
 	
 	/**
@@ -85,6 +158,26 @@ public class IOHandler {
 	}
 	
 	/**
+	 * This will delete all files recursively or just the file if it's not a directory
+	 * @param directory
+	 */
+	public void removeAll(File base){
+		if(base.isFile()){
+			base.delete();
+		}
+		if(base.isDirectory()){
+			for(File f : base.listFiles()){
+				if(f.isFile()){
+					f.delete();
+				}else{
+					removeAll(f);
+				}
+			}
+			base.delete();
+		}
+	}
+	
+	/**
 	 * This will return all supported PowerPoint files within the given directory
 	 * @param basedir
 	 * @param removeInvalid
@@ -100,7 +193,7 @@ public class IOHandler {
 				}else{
 					if(removeInvalid){
 						out.cOut("The format of the file " + onefile.getName() + " is not supported - remove");
-						onefile.delete();
+						removeAll(onefile);
 					}else{
 						out.cOut("The format of the file " + onefile.getName() + " is not supported");
 					}
@@ -108,7 +201,7 @@ public class IOHandler {
 			}else{
 				if(removeInvalid){
 					out.cOut("The Directory " + onefile.getAbsolutePath() + " is not a file - remove");
-					onefile.delete();
+					removeAll(onefile);
 				}else{
 					out.cOut("The Directory " + onefile.getAbsolutePath() + " is not a file");
 				}
@@ -119,7 +212,8 @@ public class IOHandler {
 	
 	/**
 	 * This will validate all PowerPoint source directories which exist
-	 * and return them in their valid container format
+	 * and return them in their valid container format it will ignore any container with invalid
+	 * structure
 	 * @param removeInvalid true if you want to delete any invalid file inside the depending directory
 	 * @return
 	 */
@@ -134,23 +228,24 @@ public class IOHandler {
 					try {
 						Date date = datedfolderformat.parse(dname);
 						PPTContainer pptc = new PPTContainer(dir, date);
-						validated.add(pptc);
-					} catch (ParseException e) {
-						if(removeInvalid){
-							out.cOut("Cannot parse foldername: " + dname + " - remove directory from " + dir.getParentFile().getAbsolutePath());
-							dir.delete();
-						}else{
-							out.cOut("Cannot parse foldername: " + dname);
+						for(File f: pptc.getContainer().listFiles()){
+							if(f.getName().matches(DefaultSettings.validPPTRegex)){
+								validated.add(pptc);
+								break; //contains at least one valid file
+							}
 						}
+						
+					} catch (ParseException e) {
+						out.cOut("Cannot parse foldername: " + dname);
 						e.printStackTrace();
 					}
 				}else{
-					out.cOut("Remove wrong named directory: " + dir.getName());
+					out.cOut("The name of the directory is wrong : " + dir.getName() + " correct is mm.dd.yyyy_hhmm");
 				}
 			}else{
 				if(removeInvalid){
 					out.cOut("The file " + dir.getAbsolutePath() + " is not a directory - remove");
-					dir.delete();
+					removeAll(dir);
 				}else{
 					out.cOut("The file " + dir.getAbsolutePath() + " is not a directory");
 				}
