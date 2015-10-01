@@ -4,22 +4,21 @@ import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.jacob.activeX.ActiveXComponent;
+import com.jacob.com.Dispatch;
+import com.jacob.com.Variant;
+
 import net.coldbyte.ppinfscr.interfaces.IfPPBot;
 import net.coldbyte.ppinfscr.io.IOHandler;
-import net.coldbyte.ppinfscr.settings.DefaultSettings;
+import net.coldbyte.ppinfscr.settings.UserSettings;
 import net.coldbyte.ppinfscr.ui.Output;
 import net.coldbyte.ppinfscr.util.Helper;
 
@@ -49,7 +48,9 @@ public abstract class PPBot implements IfPPBot{
 	public PPBot(){
 		this.mysrvTimer = new Timer();
 		startPPStatus(this.mysrvTimer);
+		out.cOut("Started pp status checker thread");
 		startClicker(this.mysrvTimer);
+		out.cOut("Started pp clicker thread");
 	}
 	
 	/**
@@ -72,7 +73,7 @@ public abstract class PPBot implements IfPPBot{
 				}
 			}
 		};
-		t.schedule(mysrv, 0, DefaultSettings.ppNextActionDelay);
+		t.schedule(mysrv, 5000, UserSettings.ppNextActionDelay);
 	}
 	
 	
@@ -150,7 +151,7 @@ public abstract class PPBot implements IfPPBot{
 			}
 			
 		};
-		t.schedule(mysrv, 0, DefaultSettings.ppexeStateLookupDelay);
+		t.schedule(mysrv, 0, UserSettings.ppexeStateLookupDelay);
 	}
 	
 	/**

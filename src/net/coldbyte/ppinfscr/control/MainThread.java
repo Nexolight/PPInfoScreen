@@ -1,15 +1,16 @@
 package net.coldbyte.ppinfscr.control;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.util.Timer;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.TimerTask;
 
 import net.coldbyte.ppinfscr.control.UpdateListener.ContainerOfInterest;
-import net.coldbyte.ppinfscr.interfaces.IfHealthListener;
-import net.coldbyte.ppinfscr.interfaces.IfUpdateListener;
 import net.coldbyte.ppinfscr.io.IOHandler;
-import net.coldbyte.ppinfscr.settings.DefaultSettings;
+import net.coldbyte.ppinfscr.settings.UserSettings;
 import net.coldbyte.ppinfscr.ui.Output;
+import net.coldbyte.ppinfscr.util.Helper;
 
 /**
  * 
@@ -49,11 +50,16 @@ public class MainThread{
 	 * @return
 	 */
 	private boolean prepare(){
-		if (io.createRequired(DefaultSettings.requiredDirs, DefaultSettings.requiredFiles) &&
-			io.extractTemplate(DefaultSettings.ppinfscrOptSetFile, DefaultSettings.ppinfscrOptSetFile) &&
-			io.extractTemplate(DefaultSettings.ppinfscrOptTmpl, DefaultSettings.ppinfscrOptTmpl) &&
-			io.extractTemplate(DefaultSettings.ppinfscrSetFile, DefaultSettings.ppinfscrSetFile)){
+		if (io.createRequired(UserSettings.requiredDirs, UserSettings.requiredFiles) &&
+			io.extractTemplate(UserSettings.ppinfscrSetFile_JAR, UserSettings.ppinfscrSetFile_OUT) &&
+			io.extractTemplate(UserSettings.ppinfscrOptSetFile_JAR, UserSettings.ppinfscrOptSetFile_OUT) &&
+			io.extractTemplate(UserSettings.ppinfscrOptTmpl_JAR, UserSettings.ppinfscrOptTmpl_OUT)){
 			out.cOut("Successfully created all required files");
+			if(Helper.is64()){
+				System.loadLibrary("jacob-1.18-x64");
+			}else{
+				System.loadLibrary("jacob-1.18-x86");
+			}
 			return true;
 		}else{
 			out.cOut("Could not create required files and folders. Please check the base base path of the application and make sure you have write access to them");

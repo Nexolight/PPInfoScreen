@@ -1,8 +1,6 @@
 package net.coldbyte.ppinfscr.control;
 
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -13,9 +11,8 @@ import java.util.TimerTask;
 import net.coldbyte.ppinfscr.interfaces.IfUpdateListener;
 import net.coldbyte.ppinfscr.io.IOHandler;
 import net.coldbyte.ppinfscr.models.PPTContainer;
-import net.coldbyte.ppinfscr.settings.DefaultSettings;
+import net.coldbyte.ppinfscr.settings.UserSettings;
 import net.coldbyte.ppinfscr.ui.Output;
-import net.coldbyte.ppinfscr.util.Helper;
 
 /**
  *
@@ -43,7 +40,7 @@ public abstract class UpdateListener implements IfUpdateListener{
 		this.coi = coi;
 		this.mysrvTimer = new Timer();
 		createUpdateService(this.mysrvTimer);
-		out.cOut("Started thread");
+		out.cOut("Started directory update listener thread");
 	}
 	
 	/**
@@ -214,7 +211,7 @@ public abstract class UpdateListener implements IfUpdateListener{
 			}
 			
 		};
-		t.scheduleAtFixedRate(mysrv, 0, DefaultSettings.datedFoldersLookupDelay);
+		t.scheduleAtFixedRate(mysrv, 0, UserSettings.datedFoldersLookupDelay);
 	}
 	
 	/**

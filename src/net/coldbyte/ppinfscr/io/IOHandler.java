@@ -2,7 +2,6 @@ package net.coldbyte.ppinfscr.io;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -10,11 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
-import java.net.URL;
 import java.nio.channels.FileChannel;
-import java.nio.file.FileSystemException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,9 +17,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import net.coldbyte.ppinfscr.main.Main;
 import net.coldbyte.ppinfscr.models.PPTContainer;
-import net.coldbyte.ppinfscr.settings.DefaultSettings;
+import net.coldbyte.ppinfscr.settings.UserSettings;
 import net.coldbyte.ppinfscr.settings.UserSettings.Settings;
 import net.coldbyte.ppinfscr.ui.Output;
 
@@ -59,7 +53,7 @@ public class IOHandler {
 			if(randomName){
 				filename = UUID.randomUUID().toString();
 			}
-			File dst = new File(DefaultSettings.ppinfscrSysdir + filename);
+			File dst = new File(UserSettings.ppinfscrDatadir + filename);
 			try {
 				RandomAccessFile rf = new RandomAccessFile(file, "r");
 				FileChannel bin = rf.getChannel();
@@ -160,7 +154,7 @@ public class IOHandler {
 		List<File> pptfiles = new ArrayList<File>();
 		for(File onefile : allfiles){
 			if(onefile.isFile()){
-				if(onefile.getName().matches(DefaultSettings.validPPTRegex)){
+				if(onefile.getName().matches(UserSettings.validPPTRegex)){
 					pptfiles.add(onefile);
 				}else{
 					if(removeInvalid){
@@ -191,17 +185,17 @@ public class IOHandler {
 	 */
 	public List<PPTContainer> getPPTContainers(boolean removeInvalid){
 		List<PPTContainer> validated = new ArrayList<PPTContainer>();
-		SimpleDateFormat datedfolderformat = new SimpleDateFormat(DefaultSettings.datedFoldersFormat);
-		List<File> dirs = getAll(DefaultSettings.ppinfscrSources);
+		SimpleDateFormat datedfolderformat = new SimpleDateFormat(UserSettings.datedFoldersFormat);
+		List<File> dirs = getAll(UserSettings.ppinfscrSources);
 		for(File dir : dirs){
 			if(dir.isDirectory()){
 				String dname = dir.getName();
-				if(dname.matches(DefaultSettings.datedFoldersRegex)){
+				if(dname.matches(UserSettings.datedFoldersRegex)){
 					try {
 						Date date = datedfolderformat.parse(dname);
 						PPTContainer pptc = new PPTContainer(dir, date);
 						for(File f: pptc.getContainer().listFiles()){
-							if(f.getName().matches(DefaultSettings.validPPTRegex)){
+							if(f.getName().matches(UserSettings.validPPTRegex)){
 								validated.add(pptc);
 								break; //contains at least one valid file
 							}
@@ -271,14 +265,14 @@ public class IOHandler {
 	
 	/**
 	 * This will extract the given file into the given location
-	 * @param filename
+	 * @param pathinjar
 	 * @return
 	 */
-	public boolean extractTemplate(String filename, String dst){
-		InputStream in = getClass().getResourceAsStream("/templates/"+filename);
+	public boolean extractTemplate(String pathinjar, String dst){
+		InputStream in = getClass().getResourceAsStream(pathinjar);
 		
 		if(in == null){
-			out.cOut("Template file in jar /templates/"+filename + " does not exist");
+			out.cOut("Template file in jar "+ pathinjar + " does not exist");
 			return false;
 		}
 		File mydst = new File(dst);
@@ -300,7 +294,7 @@ public class IOHandler {
 					e.printStackTrace();
 					return false;
 				}
-				out.cOut("Extracted template " + filename + " to " + dst);
+				out.cOut("Extracted template " + pathinjar + " to " + dst);
 				return true;
 			}else{
 				return true;
@@ -317,15 +311,15 @@ public class IOHandler {
 	 * @return
 	 */
 	public String readSetting(Settings setting){
-		File ini = new File("settings.ini");
+		//out.cOut(System.getProperty("user.home") + "/.PPInfoScreen/" + "settings.ini");
+		File ini = new File(UserSettings.ppinfscrSetFile_OUT);
 		if(ini.exists() && ini.isFile()){
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(ini));
 				String line = null;
-				while ((line = br.readLine()) != null) {
-					line = line.replaceAll(" ", "");
-					if(line.matches("^"+setting.name()+"=.*")){
-						return line.split("=")[1];
+				while ((line = br.readLine().trim()) != null) {
+					if(line.matches("^"+setting.name()+".*?\\=.*$")){
+						return line.split("=")[1].trim();
 					}
 				}
 				br.close();
