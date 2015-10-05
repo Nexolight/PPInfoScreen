@@ -58,6 +58,7 @@ public class WindowManager {
 	public void showWelcome(long interruptDelay, MouseListener onSettings, Callable<Void> onNonInterrput){
 		int w = 300;
 		int h = 200;
+		this.welcomeWindowInterrupted = false;
 		
 		MigLayout mlw = new MigLayout("fill, nogrid");
 		this.welcomeWindow = new JFrame("Welcome");
@@ -326,6 +327,15 @@ public class WindowManager {
 		
 		this.settingsWindow.setVisible(true);
 		p1.setVisible(true);
+	}
+	
+	/**
+	 * Closes the settings window without any action
+	 */
+	public void closeSettings(){
+		if(this.settingsWindow != null){
+			this.settingsWindow.dispose();
+		}
 	}
 	
 }
