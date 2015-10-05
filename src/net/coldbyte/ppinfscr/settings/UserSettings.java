@@ -29,16 +29,13 @@ public class UserSettings {
 	
 	public String ppinfscrRoot					= getString(Settings.APPLICATION_ROOT);
 	public String ppinfscrSources 				= ppinfscrRoot 		+ "/InformationScreen/";
-	public String ppinfscrOptSet				= ppinfscrRoot 		+ "/Settings/";
 	public static String ppinfscrDatadir		= ppinfscrSetDir 	+ "/data/";
 	public String ppinfscrTmpldir 				= ppinfscrSources 	+ "/01.01.2015_1830/";
 	public String ppexeLocation					= getString(Settings.PP_EXE_LOCATION);
 	
 	public String ppinfscrSetFile_JAR		= "/templates/settings.ini";
-	public String ppinfscrOptSetFile_JAR	= "/templates/optsettings.ini";
 	public String ppinfscrOptTmpl_JAR		= "/templates/example.pptx";
 	
-	public String ppinfscrOptSetFile_OUT 	= ppinfscrOptSet + "optsettings.ini";
 	public String ppinfscrOptTmpl_OUT 		= ppinfscrTmpldir + "example.pptx";
 	public static String jacobDLLx86		= "jacob-1.18-x86";
 	public static String jacobDLLx64		= "jacob-1.18-x64";
@@ -50,7 +47,6 @@ public class UserSettings {
 	public String[] requiredDirs			= {	ppinfscrSetDir,
 												ppinfscrDefaultStruct,
 												ppinfscrSources, 
-												ppinfscrOptSet, 
 												ppinfscrDatadir, 
 												ppinfscrTmpldir};
 	

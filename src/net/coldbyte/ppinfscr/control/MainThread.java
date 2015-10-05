@@ -100,8 +100,7 @@ public class MainThread{
 	 */
 	private boolean prepare(){
 		if (io.createRequired(this.uS.requiredDirs, this.uS.requiredFiles) &&
-			io.extractTemplate(this.uS.ppinfscrSetFile_JAR, this.uS.ppinfscrSetFile_OUT) &&
-			io.extractTemplate(this.uS.ppinfscrOptSetFile_JAR, this.uS.ppinfscrOptSetFile_OUT) &&
+			io.extractTemplate(this.uS.ppinfscrSetFile_JAR, UserSettings.ppinfscrSetFile_OUT) &&
 			io.extractTemplate(this.uS.ppinfscrOptTmpl_JAR, this.uS.ppinfscrOptTmpl_OUT)){
 			out.cOut("Successfully created all required files");
 			if(Helper.is64()){
