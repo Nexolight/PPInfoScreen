@@ -62,7 +62,7 @@ public class MainThread{
 			out.cOut("The PowerPoint executable is unavailable - please set the path manually");
 			return false;
 		}
-		if(!new File(currentSettings.getPpExeLocation()).getName().matches(UserSettings.validPPEXEName)){
+		if(!new File(currentSettings.getPpExeLocation()).getName().matches(UserSettings.validPPEXENameRegex)){
 			out.cOut("The executable file does not seem to be the PowerPoint executable (Wrong filename)");
 			return false;
 		}

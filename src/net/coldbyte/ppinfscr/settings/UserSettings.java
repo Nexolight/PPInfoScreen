@@ -44,7 +44,7 @@ public class UserSettings {
 	public static String datedFoldersRegex	= "^[0-3]{0,1}[0-9]{1}\\.[0-1]{0,1}[0-9]{1}\\.[2-3]{1}[0-9]{3}_[0-2]{0,1}[0-9]{1}[0-5]{0,1}[0-9]{1}$";
 	public static String datedFoldersFormat	= "dd.MM.yyyy_HHmm";
 	public static String validPPTRegex		= "^.*\\.(ppt|pptx)$";
-	public static String validPPEXEName		= "^(POWERPNT.EXE|powerpnt.exe)$";
+	public static String validPPEXENameRegex= "^(POWERPNT.EXE|powerpnt.exe)$";
 	
 	public String[] requiredDirs			= {	ppinfscrSetDir,
 												ppinfscrDefaultStruct,
