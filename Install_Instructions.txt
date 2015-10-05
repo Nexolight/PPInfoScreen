@@ -5,7 +5,6 @@ This is for advanced users basic users read the /templates/example.pptx
 	--> You must install java 7 or later
 	--> You must install PowerPoint 2007 or later
 	--> You must setup the presentations to loop
-	--> You must change the constants in net.coldbyte.ppinfscr.settings.DefaultSettings
 
 	1.1 Hint:
 	-------------------------------------------------------------------------------------

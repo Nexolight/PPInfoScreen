@@ -2,6 +2,7 @@ package net.coldbyte.ppinfscr.settings;
 
 import net.coldbyte.ppinfscr.io.IOHandler;
 import net.coldbyte.ppinfscr.models.GUISettings;
+import net.coldbyte.ppinfscr.settings.UserSettings.Settings;
 
 /**
  *
@@ -142,6 +143,17 @@ public class UserSettings {
 		IOHandler io = new IOHandler();
 		String line = io.readSetting(setting);
 		return line;
+	}
+	
+	public GUISettings getGUISettings(){
+		GUISettings currentSettings = new GUISettings(	
+				getString(Settings.APPLICATION_ROOT),
+				getLong(Settings.FOLDER_LOOKUP_DELAY),
+				getLong(Settings.PP_STATE_LOOKUP_DELAY), 
+				getLong(Settings.PP_NEXT_SHEET_DELAY), 
+				getString(Settings.PP_EXE_LOCATION)
+		);
+		return currentSettings;
 	}
 	
 	/**

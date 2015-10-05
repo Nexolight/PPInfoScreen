@@ -40,58 +40,71 @@ public class MainThread{
 	
 	/**
 	 * Start the program you have to call this after the constructor
-	 * Call prepare to create everything needed and then start the gui
-	 * including the call to start the program when the settings were not
-	 * opened
+	 * Call prepare to create everything needed.
 	 */
 	public void start(){
-		this.wm = new WindowManager();
-		this.uS = new UserSettings();
-		this.io = new IOHandler();
 		if(prepare()){
-			wm.showWelcome(5000, new Callable<Void>(){
-				@Override
-				public Void call() throws Exception{
-					wm.closeWelcome();
-					GUISettings currentSettings = new GUISettings(	
-						uS.getString(Settings.APPLICATION_ROOT),
-						uS.getLong(Settings.FOLDER_LOOKUP_DELAY),
-						uS.getLong(Settings.PP_STATE_LOOKUP_DELAY), 
-						uS.getLong(Settings.PP_NEXT_SHEET_DELAY), 
-						uS.getString(Settings.PP_EXE_LOCATION)
-					);
-					
-					wm.showSettings(currentSettings, new Callable<Void>(){
-						@Override
-						public Void call() throws Exception {
-							io.saveSettings(wm.getSettings());
-							wm.closeSettings();
-							stopServices();
-							start();
-							return null;
-						}
-					}, new Callable<Void>(){
-						@Override
-						public Void call() throws Exception {
-							wm.closeSettings();
-							stopServices();
-							start();
-							return null;
-						}
-					});
-					return null;
-				}
-			}, new Callable<Void>(){
-				@Override
-				public Void call() throws Exception {
-					wm.closeWelcome();
-					runServices();
-					return null;
-				}
-			});
-		}else{
-			out.cOut("Not implemented");
+			if(checkSettings()){
+				createWelcome();
+			}else{
+				createSettings();
+			}
 		}
+	}
+	
+	/**
+	 * Use this to make sure that all settings are valid (including paths)
+	 * @return
+	 */
+	private boolean checkSettings(){
+		return true;
+	}
+	
+	/**
+	 * This will open the welcome gui with a countdown for default startup
+	 */
+	private void createWelcome(){
+		this.wm.showWelcome(5000, new Callable<Void>(){
+			@Override
+			public Void call() throws Exception{
+				wm.closeWelcome();
+				createSettings();
+				return null;
+			}
+		}, new Callable<Void>(){
+			@Override
+			public Void call() throws Exception {
+				wm.closeWelcome();
+				runServices();
+				return null;
+			}
+		});
+	}
+	
+	/**
+	 * This will open the settings gui where the user can edit some basic information
+	 * which is needed to run the prgram properly
+	 */
+	private void createSettings(){
+		GUISettings currentSettings = this.uS.getGUISettings();
+		this.wm.showSettings(currentSettings, new Callable<Void>(){
+			@Override
+			public Void call() throws Exception {
+				io.saveSettings(wm.getSettings());
+				wm.closeSettings();
+				stopServices();
+				start();
+				return null;
+			}
+		}, new Callable<Void>(){
+			@Override
+			public Void call() throws Exception {
+				wm.closeSettings();
+				stopServices();
+				start();
+				return null;
+			}
+		});
 	}
 	
 	/**
@@ -99,6 +112,9 @@ public class MainThread{
 	 * @return
 	 */
 	private boolean prepare(){
+		this.wm = new WindowManager();
+		this.uS = new UserSettings();
+		this.io = new IOHandler();
 		if (io.createRequired(this.uS.requiredDirs, this.uS.requiredFiles) &&
 			io.extractTemplate(this.uS.ppinfscrSetFile_JAR, UserSettings.ppinfscrSetFile_OUT) &&
 			io.extractTemplate(this.uS.ppinfscrOptTmpl_JAR, this.uS.ppinfscrOptTmpl_OUT)){
