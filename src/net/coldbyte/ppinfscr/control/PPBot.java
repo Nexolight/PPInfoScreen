@@ -73,7 +73,7 @@ public abstract class PPBot implements IfPPBot{
 				}
 			}
 		};
-		t.schedule(mysrv, 5000, UserSettings.ppNextActionDelay);
+		t.schedule(mysrv, 0, UserSettings.ppNextActionDelay);
 	}
 	
 	

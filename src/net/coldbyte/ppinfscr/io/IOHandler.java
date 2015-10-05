@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import net.coldbyte.ppinfscr.models.GUISettings;
 import net.coldbyte.ppinfscr.models.PPTContainer;
 import net.coldbyte.ppinfscr.settings.UserSettings;
 import net.coldbyte.ppinfscr.settings.UserSettings.Settings;
@@ -335,6 +336,35 @@ public class IOHandler {
 			return null;
 		}else{
 			return null;
+		}
+	}
+	
+	/**
+	 * This will save the current settings to the depending file
+	 * @param currentSettings
+	 */
+	public void saveSettings(GUISettings currentSettings){
+		File settings = new File(UserSettings.ppinfscrSetFile_OUT);
+		if(settings.exists()){
+			try {
+				settings.delete();
+				settings.createNewFile();
+				try {
+					FileOutputStream fout = new FileOutputStream(settings);
+					
+					
+					//fout.write(null);
+					
+					
+					fout.close();
+				} catch (FileNotFoundException e) {
+					out.cOut("Cannot write to settings file - FileNotFoundException");
+					e.printStackTrace();
+				}
+			} catch (IOException e) {
+				out.cOut("Cannot save Settings - IOException");
+				e.printStackTrace();
+			}
 		}
 	}
 }

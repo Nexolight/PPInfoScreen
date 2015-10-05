@@ -23,7 +23,7 @@ public class UserSettings {
 	}
 	
 	public static final String	ppinfscrSetDir 			= System.getProperty("user.home").replace("\\", "/") + "/.PPInfoScreen";
-	public static final String 	ppinfscrSetFile_OUT 	= ppinfscrSetDir + "settings.ini";
+	public static final String 	ppinfscrSetFile_OUT 	= ppinfscrSetDir + "/settings.ini";
 	
 	public static final String	ppinfscrRoot	= getString(Settings.APPLICATION_ROOT);
 	public static final String	ppinfscrSources = ppinfscrRoot 		+ "/InformationScreen/";
@@ -56,7 +56,7 @@ public class UserSettings {
 	public static final long datedFoldersLookupDelay 	= getLong(Settings.FOLDER_LOOKUP_DELAY);
 	public static final long ppexeStateLookupDelay 		= getLong(Settings.PP_STATE_LOOKUP_DELAY); //ms
 	
-	public static final String ppexeStartupCmds 		= ppexeLocation + " -S [pptfile]"; //[pptfile] will be replaced automatically
+	public static final String ppexeStartupCmds 		= " -S [pptfile]"; //[pptfile] will be replaced automatically
 	public static final String[] tasklistCmds 			= {"cmd.exe", "/C", "tasklist.exe | find [ppexe] /I"}; //[ppexe] will be replaced automatically
 
 	public static final long ppNextActionDelay			= getLong(Settings.PP_NEXT_SHEET_DELAY); //ms

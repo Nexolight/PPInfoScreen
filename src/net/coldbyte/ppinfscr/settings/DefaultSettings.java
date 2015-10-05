@@ -17,7 +17,7 @@ public class DefaultSettings {
 	}
 
 	protected static final String	ppinfscrRoot	= "Z:/";
-	protected static final String	ppexeLocation	= "\"C:\\Program Files (x86)\\Microsoft Office\\Office14\\POWERPNT.EXE\"";
+	protected static final String	ppexeLocation	= "C:/Program Files (x86)/Microsoft Office/Office14/POWERPNT.EXE";
 	protected static final long datedFoldersLookupDelay 	= 5000; //ms
 	protected static final long ppexeStateLookupDelay 		= 3000; //ms
 	protected static final long ppNextActionDelay			= 8000; //ms

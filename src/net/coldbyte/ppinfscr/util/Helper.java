@@ -3,6 +3,7 @@ package net.coldbyte.ppinfscr.util;
 import java.io.File;
 
 import net.coldbyte.ppinfscr.settings.UserSettings;
+import net.coldbyte.ppinfscr.settings.UserSettings.Settings;
 
 /**
  *
@@ -47,7 +48,9 @@ public class Helper {
 	 * @return
 	 */
 	public static String getPPStartupCmd(String fullpath){
-		return UserSettings.ppexeStartupCmds.replace("[pptfile]", "\""+fullpath+"\"");
+		String pploc = "\""+UserSettings.getString(Settings.PP_EXE_LOCATION)+"\"".replace("/", "\\");
+		String ppcmd = UserSettings.ppexeStartupCmds.replace("[pptfile]", "\""+fullpath+"\"");
+		return pploc + " " + ppcmd;
 	}
 	
 	/**
