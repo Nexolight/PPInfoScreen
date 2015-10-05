@@ -23,8 +23,9 @@ public class UserSettings {
 		
 	}
 	
-	public static String ppinfscrSetDir 			= System.getProperty("user.home").replace("\\", "/") + "/.PPInfoScreen/";
-	public static String ppinfscrSetFile_OUT 		= ppinfscrSetDir + "settings.ini";
+	public static String ppinfscrSetDir 		= System.getProperty("user.home").replace("\\", "/") + "/.PPInfoScreen/";
+	public static String ppinfscrDefaultStruct	= ppinfscrSetDir + "Structure";
+	public static String ppinfscrSetFile_OUT 	= ppinfscrSetDir + "settings.ini";
 	
 	public String ppinfscrRoot					= getString(Settings.APPLICATION_ROOT);
 	public String ppinfscrSources 				= ppinfscrRoot 		+ "/InformationScreen/";
@@ -47,6 +48,7 @@ public class UserSettings {
 	public static String validPPTRegex		= "^.*\\.(ppt|pptx)$";
 	
 	public String[] requiredDirs			= {	ppinfscrSetDir,
+												ppinfscrDefaultStruct,
 												ppinfscrSources, 
 												ppinfscrOptSet, 
 												ppinfscrDatadir, 

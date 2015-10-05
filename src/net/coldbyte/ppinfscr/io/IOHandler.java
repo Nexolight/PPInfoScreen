@@ -318,7 +318,8 @@ public class IOHandler {
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(ini));
 				String line = null;
-				while ((line = br.readLine().trim()) != null) {
+				while ((line = br.readLine()) != null) {
+					line = line.trim();
 					if(line.matches("^"+setting.name()+".*?\\=.*$")){
 						return line.split("=")[1].trim();
 					}

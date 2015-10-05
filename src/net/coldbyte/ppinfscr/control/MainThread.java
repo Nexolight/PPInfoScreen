@@ -45,8 +45,8 @@ public class MainThread{
 	 * opened
 	 */
 	public void start(){
-		this.uS = new UserSettings();
 		this.wm = new WindowManager();
+		this.uS = new UserSettings();
 		this.io = new IOHandler();
 		if(prepare()){
 			wm.showWelcome(5000, new Callable<Void>(){
