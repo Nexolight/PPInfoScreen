@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.coldbyte.ppinfscr.interfaces.IfKillable;
 import net.coldbyte.ppinfscr.interfaces.IfUpdateListener;
 import net.coldbyte.ppinfscr.io.IOHandler;
 import net.coldbyte.ppinfscr.models.PPTContainer;
@@ -21,10 +22,11 @@ import net.coldbyte.ppinfscr.ui.Output;
  * See COPYING.txt
  *
  */
-public abstract class UpdateListener implements IfUpdateListener{
+public abstract class UpdateListener implements IfUpdateListener, IfKillable{
 	
 	private final IOHandler io = new IOHandler();
 	private final UpdateListener inst = this;
+	private final UserSettings uS = new UserSettings();
 	private Output out = new Output(this.getClass().getName());
 	private boolean killtoggle = false;
 	private Timer mysrvTimer;
@@ -211,13 +213,13 @@ public abstract class UpdateListener implements IfUpdateListener{
 			}
 			
 		};
-		t.scheduleAtFixedRate(mysrv, 0, UserSettings.datedFoldersLookupDelay);
+		t.scheduleAtFixedRate(mysrv, 0, this.uS.datedFoldersLookupDelay);
 	}
 	
 	/**
 	 * Use this to properly exit the listener thread
 	 */
-	protected void killThread(){
+	public void killThread(){
 		this.killtoggle = true;
 		this.mysrvTimer.cancel();
 	}

@@ -17,13 +17,6 @@ public class GUISettings {
 	
 	/**
 	 * This model represents the possible gui settings
-	 */
-	public GUISettings() {
-		super();
-	}
-	
-	/**
-	 * This model represents the possible gui settings
 	 * @param applicationRoot
 	 * @param folderLookupDelay
 	 * @param ppStateLookupDelay
@@ -40,7 +33,7 @@ public class GUISettings {
 	}
 	
 	public String getApplicationRoot() {
-		return applicationRoot;
+		return applicationRoot.replace("\\", "/");
 	}
 	public void setApplicationRoot(String applicationRoot) {
 		this.applicationRoot = applicationRoot;
@@ -64,7 +57,7 @@ public class GUISettings {
 		this.ppNextSheetDelay = ppNextSheetDelay;
 	}
 	public String getPpExeLocation() {
-		return ppExeLocation;
+		return ppExeLocation.replace("\\", "/");
 	}
 	public void setPpExeLocation(String ppExeLocation) {
 		this.ppExeLocation = ppExeLocation;

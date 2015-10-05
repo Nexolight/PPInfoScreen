@@ -40,6 +40,7 @@ public class WindowManager {
 	private JFrame welcomeWindow = null;
 	private boolean welcomeWindowInterrupted = false;
 	private JFrame settingsWindow = null;
+	private GUISettings currentSettings = null;
 	
 	
 	/**
@@ -55,7 +56,7 @@ public class WindowManager {
 	 * @param onSettings
 	 * @param onNonInterrput
 	 */
-	public void showWelcome(long interruptDelay, MouseListener onSettings, Callable<Void> onNonInterrput){
+	public void showWelcome(long interruptDelay, Callable<Void> onSettings, Callable<Void> onNonInterrput){
 		int w = 300;
 		int h = 200;
 		this.welcomeWindowInterrupted = false;
@@ -113,8 +114,29 @@ public class WindowManager {
 		};
 		Timer t = new Timer();
 		t.schedule(countdown, 0);
-		
-		btnSettings.addMouseListener(onSettings);
+		btnSettings.addMouseListener(new MouseListener(){
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent e) {
+				try {
+					onSettings.call();
+				} catch (Exception e1) {
+					out.cOut("Cannot call callable - Exception");
+					e1.printStackTrace();
+				}
+			}
+			@Override
+			public void mouseEntered(java.awt.event.MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(java.awt.event.MouseEvent e) {
+			}
+			@Override
+			public void mousePressed(java.awt.event.MouseEvent e) {
+			}
+			@Override
+			public void mouseReleased(java.awt.event.MouseEvent e) {
+			}
+		});
 	}
 	
 	/**
@@ -130,9 +152,10 @@ public class WindowManager {
 	/**
 	 * Open the settings window
 	 */
-	public void showSettings(GUISettings currentSettings, Callable<Void> onSaveAndProceed, Callable<Void> onCancel){
+	public void showSettings(GUISettings settings, Callable<Void> onSaveAndProceed, Callable<Void> onCancel){
 		int w = 550;
 		int h = 450;
+		this.currentSettings = settings;
 		
 		MigLayout mlw = new MigLayout("fill, nogrid");
 		this.settingsWindow = new JFrame("Settings");
@@ -156,7 +179,7 @@ public class WindowManager {
 				fcApplicationRoot.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int fcApplicationRootStatus = fcApplicationRoot.showOpenDialog(settingsWindow);
 				if(fcApplicationRootStatus == JFileChooser.APPROVE_OPTION){
-					txtbApplicationRoot.setText(fcApplicationRoot.getSelectedFile().getAbsolutePath());
+					txtbApplicationRoot.setText(fcApplicationRoot.getSelectedFile().getAbsolutePath().replace("\\", "/"));
 					currentSettings.setApplicationRoot(fcApplicationRoot.getSelectedFile().getAbsolutePath());
 				}
 			}
@@ -191,7 +214,7 @@ public class WindowManager {
 				fcPPExe.setFileFilter(new FileNameExtensionFilter("POWERPNT.EXE", "exe"));
 				int fcPPExeStatus = fcPPExe.showOpenDialog(settingsWindow);
 				if(fcPPExeStatus == JFileChooser.APPROVE_OPTION){
-					txtbPPExe.setText(fcPPExe.getSelectedFile().getAbsolutePath());
+					txtbPPExe.setText(fcPPExe.getSelectedFile().getAbsolutePath().replace("\\", "/"));
 					currentSettings.setPpExeLocation(fcPPExe.getSelectedFile().getAbsolutePath());
 				}
 			}
@@ -220,18 +243,6 @@ public class WindowManager {
 		p1.add(lblFLUD, "spanx 6, gaptop 10");
 		p1.add(txtbFLUD, "gaptop 10, width 75, height 30, spanx 2, align right");
 		p1.add(lblFLUDFormat, "gaptop 10, spanx 2, wrap");
-		txtbFLUD.getDocument().addDocumentListener(new DocumentListener(){
-			@Override
-			public void changedUpdate(DocumentEvent arg0) {
-				currentSettings.setFolderLookupDelay(Long.valueOf(txtbFLUD.getText()) * 1000);
-			}
-			@Override
-			public void insertUpdate(DocumentEvent arg0) {
-			}
-			@Override
-			public void removeUpdate(DocumentEvent arg0) {
-			}
-		});
 		
 		//PowerPoint state lookup delay
 		JLabel lblPPLUD = new JLabel("Set Powerpoint status check intervall");
@@ -240,18 +251,6 @@ public class WindowManager {
 		p1.add(lblPPLUD, "spanx 6, gaptop 5");
 		p1.add(txtbPPLUD, "gaptop 5, width 75, height 30, spanx 2, align right");
 		p1.add(lblPPLUDFormat, "gaptop 5, spanx 2, wrap");
-		txtbPPLUD.getDocument().addDocumentListener(new DocumentListener(){
-			@Override
-			public void changedUpdate(DocumentEvent arg0) {
-				currentSettings.setPpStateLookupDelay(Long.valueOf(txtbPPLUD.getText()) * 1000);
-			}
-			@Override
-			public void insertUpdate(DocumentEvent arg0) {
-			}
-			@Override
-			public void removeUpdate(DocumentEvent arg0) {
-			}
-		});
 		
 		//PowerPoint next sheet every n seconds
 		JLabel lblPPNSD = new JLabel("Set the 'next sheet' delay for PowerPoint");
@@ -260,24 +259,18 @@ public class WindowManager {
 		p1.add(lblPPNSD, "spanx 6, gaptop 5");
 		p1.add(txtbPPNSD, "gaptop 5, width 75, height 30, spanx 2, align right");
 		p1.add(lblPPNSDFormat, "gaptop 5, spanx 2, wrap");
-		txtbPPNSD.getDocument().addDocumentListener(new DocumentListener(){
-			@Override
-			public void changedUpdate(DocumentEvent arg0) {
-				currentSettings.setPpNextSheetDelay(Long.valueOf(txtbPPNSD.getText()) * 1000);
-			}
-			@Override
-			public void insertUpdate(DocumentEvent arg0) {
-			}
-			@Override
-			public void removeUpdate(DocumentEvent arg0) {
-			}
-		});
-		
+
 		//Action buttons
 		JButton saveProceed = new JButton("Save & Proceed");
 		saveProceed.addMouseListener(new MouseListener(){
 			@Override
 			public void mouseClicked(java.awt.event.MouseEvent arg0) {
+				
+				currentSettings.setFolderLookupDelay(Long.valueOf(txtbFLUD.getText()) * 1000);
+				currentSettings.setPpStateLookupDelay(Long.valueOf(txtbPPLUD.getText()) * 1000);
+				currentSettings.setPpNextSheetDelay(Long.valueOf(txtbPPNSD.getText()) * 1000);
+				
+				
 				try {
 					onSaveAndProceed.call();
 				} catch (Exception e) {
@@ -336,6 +329,14 @@ public class WindowManager {
 		if(this.settingsWindow != null){
 			this.settingsWindow.dispose();
 		}
+	}
+	
+	/**
+	 * Thiw will return the current settings made in the gui
+	 * @return
+	 */
+	public GUISettings getSettings(){
+		return this.currentSettings;
 	}
 	
 }

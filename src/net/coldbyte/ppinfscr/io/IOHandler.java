@@ -31,7 +31,6 @@ import net.coldbyte.ppinfscr.ui.Output;
  *
  */
 public class IOHandler {
-	
 	private Output out = new Output(this.getClass().getName());
 	
 	/**
@@ -54,7 +53,8 @@ public class IOHandler {
 			if(randomName){
 				filename = UUID.randomUUID().toString();
 			}
-			File dst = new File(UserSettings.ppinfscrDatadir + filename);
+			UserSettings uS = new UserSettings();
+			File dst = new File(uS.ppinfscrDatadir + filename);
 			try {
 				RandomAccessFile rf = new RandomAccessFile(file, "r");
 				FileChannel bin = rf.getChannel();
@@ -186,8 +186,9 @@ public class IOHandler {
 	 */
 	public List<PPTContainer> getPPTContainers(boolean removeInvalid){
 		List<PPTContainer> validated = new ArrayList<PPTContainer>();
+		UserSettings uS = new UserSettings();
 		SimpleDateFormat datedfolderformat = new SimpleDateFormat(UserSettings.datedFoldersFormat);
-		List<File> dirs = getAll(UserSettings.ppinfscrSources);
+		List<File> dirs = getAll(uS.ppinfscrSources);
 		for(File dir : dirs){
 			if(dir.isDirectory()){
 				String dname = dir.getName();
@@ -312,7 +313,6 @@ public class IOHandler {
 	 * @return
 	 */
 	public String readSetting(Settings setting){
-		//out.cOut(System.getProperty("user.home") + "/.PPInfoScreen/" + "settings.ini");
 		File ini = new File(UserSettings.ppinfscrSetFile_OUT);
 		if(ini.exists() && ini.isFile()){
 			try {
@@ -350,12 +350,10 @@ public class IOHandler {
 				settings.delete();
 				settings.createNewFile();
 				try {
+					UserSettings uS = new UserSettings();
 					FileOutputStream fout = new FileOutputStream(settings);
-					
-					
-					//fout.write(null);
-					
-					
+					String newSettings = uS.getNewSettingsContent(currentSettings);
+					fout.write(newSettings.getBytes());
 					fout.close();
 				} catch (FileNotFoundException e) {
 					out.cOut("Cannot write to settings file - FileNotFoundException");

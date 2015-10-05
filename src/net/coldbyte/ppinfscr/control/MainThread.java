@@ -1,9 +1,6 @@
 package net.coldbyte.ppinfscr.control;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
-import java.util.TimerTask;
 import java.util.concurrent.Callable;
 
 import net.coldbyte.ppinfscr.control.UpdateListener.ContainerOfInterest;
@@ -26,10 +23,13 @@ import net.coldbyte.ppinfscr.util.Helper;
 public class MainThread{
 	
 	private String[] args;
-	private IOHandler io = new IOHandler();
+	private IOHandler io;
 	private Output out = new Output(this.getClass().getName());
-	private WindowManager wm = new WindowManager();
-	private TimerTask myDspSrv;
+	private WindowManager wm;
+	private UserSettings uS;
+	private HealthListener health;
+	private PPBot ppbot;
+	private UpdateListener update;
 	
 	/**
 	 * Use this constructor to start the program with the given params.
@@ -45,22 +45,28 @@ public class MainThread{
 	 * opened
 	 */
 	public void start(){
+		this.uS = new UserSettings();
+		this.wm = new WindowManager();
+		this.io = new IOHandler();
 		if(prepare()){
-			wm.showWelcome(5000, new MouseListener(){
+			wm.showWelcome(5000, new Callable<Void>(){
 				@Override
-				public void mouseClicked(MouseEvent arg0) {
+				public Void call() throws Exception{
 					wm.closeWelcome();
-					GUISettings currentSettings = new GUISettings();
-					currentSettings.setApplicationRoot(UserSettings.getString(Settings.APPLICATION_ROOT));
-					currentSettings.setPpExeLocation(UserSettings.getString(Settings.PP_EXE_LOCATION));
-					currentSettings.setFolderLookupDelay(UserSettings.getLong(Settings.FOLDER_LOOKUP_DELAY));
-					currentSettings.setPpStateLookupDelay(UserSettings.getLong(Settings.PP_STATE_LOOKUP_DELAY));
-					currentSettings.setPpNextSheetDelay(UserSettings.getLong(Settings.PP_NEXT_SHEET_DELAY));
+					GUISettings currentSettings = new GUISettings(	
+						uS.getString(Settings.APPLICATION_ROOT),
+						uS.getLong(Settings.FOLDER_LOOKUP_DELAY),
+						uS.getLong(Settings.PP_STATE_LOOKUP_DELAY), 
+						uS.getLong(Settings.PP_NEXT_SHEET_DELAY), 
+						uS.getString(Settings.PP_EXE_LOCATION)
+					);
+					
 					wm.showSettings(currentSettings, new Callable<Void>(){
 						@Override
 						public Void call() throws Exception {
-							//io.saveSettings(currentSettings);
+							io.saveSettings(wm.getSettings());
 							wm.closeSettings();
+							stopServices();
 							start();
 							return null;
 						}
@@ -68,24 +74,13 @@ public class MainThread{
 						@Override
 						public Void call() throws Exception {
 							wm.closeSettings();
+							stopServices();
 							start();
 							return null;
 						}
 					});
+					return null;
 				}
-				@Override
-				public void mouseEntered(MouseEvent arg0) {
-				}
-				@Override
-				public void mouseExited(MouseEvent arg0) {
-				}
-				@Override
-				public void mousePressed(MouseEvent arg0) {
-				}
-				@Override
-				public void mouseReleased(MouseEvent arg0) {
-				}
-				
 			}, new Callable<Void>(){
 				@Override
 				public Void call() throws Exception {
@@ -104,10 +99,10 @@ public class MainThread{
 	 * @return
 	 */
 	private boolean prepare(){
-		if (io.createRequired(UserSettings.requiredDirs, UserSettings.requiredFiles) &&
-			io.extractTemplate(UserSettings.ppinfscrSetFile_JAR, UserSettings.ppinfscrSetFile_OUT) &&
-			io.extractTemplate(UserSettings.ppinfscrOptSetFile_JAR, UserSettings.ppinfscrOptSetFile_OUT) &&
-			io.extractTemplate(UserSettings.ppinfscrOptTmpl_JAR, UserSettings.ppinfscrOptTmpl_OUT)){
+		if (io.createRequired(this.uS.requiredDirs, this.uS.requiredFiles) &&
+			io.extractTemplate(this.uS.ppinfscrSetFile_JAR, this.uS.ppinfscrSetFile_OUT) &&
+			io.extractTemplate(this.uS.ppinfscrOptSetFile_JAR, this.uS.ppinfscrOptSetFile_OUT) &&
+			io.extractTemplate(this.uS.ppinfscrOptTmpl_JAR, this.uS.ppinfscrOptTmpl_OUT)){
 			out.cOut("Successfully created all required files");
 			if(Helper.is64()){
 				System.loadLibrary("jacob-1.18-x64");
@@ -126,35 +121,25 @@ public class MainThread{
 	 * depending on the current structure
 	 */
 	private void runServices(){
-		
-		final HealthListener health = new HealthListener(){
-
+		this.health = new HealthListener(){
 			@Override
 			public void onStructureChange() {
 				// TODO Auto-generated method stub
-				
 			}
-
 			@Override
 			public void onStructureRepair() {
 				// TODO Auto-generated method stub
-				
 			}
-			
 		};
 		
-		final PPBot ppbot = new PPBot(){
-
+		this.ppbot = new PPBot(){
 			@Override
 			public void stateChanged(PPBotState oldstate, PPBotState newstate) {
 				out.cOut("PPBot changed state from: " + oldstate.name() + " to: " + newstate.name());
-				
 			}
-
 		};
 		
-		final UpdateListener update = new UpdateListener(ContainerOfInterest.INTIME){
-
+		this.update = new UpdateListener(ContainerOfInterest.INTIME){
 			@Override
 			public void onContainerUpdated(File old, File updated) {
 				String oldstr = "null", newstr = "null";
@@ -184,10 +169,21 @@ public class MainThread{
 			public void onDoCloseAll() {
 				out.cOut("No files or directories found - close everything");
 			}
-			
 		};
-		
-		
-		
+	}
+	
+	/**
+	 * This will kill all running services
+	 */
+	private void stopServices(){
+		if(this.health != null){
+			this.health.killThread();
+		}
+		if(this.ppbot != null){
+			this.ppbot.killThread();
+		}
+		if(this.update != null){
+			this.update.killThread();
+		}
 	}
 }

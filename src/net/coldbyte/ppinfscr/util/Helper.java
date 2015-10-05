@@ -14,6 +14,8 @@ import net.coldbyte.ppinfscr.settings.UserSettings.Settings;
  */
 public class Helper {
 	
+	private UserSettings uS = new UserSettings();
+	
 	/**
 	 * Just a helper class for some misc things
 	 */
@@ -47,8 +49,8 @@ public class Helper {
 	 * @param fullpath
 	 * @return
 	 */
-	public static String getPPStartupCmd(String fullpath){
-		String pploc = "\""+UserSettings.getString(Settings.PP_EXE_LOCATION)+"\"".replace("/", "\\");
+	public String getPPStartupCmd(String fullpath){
+		String pploc = "\""+this.uS.getString(Settings.PP_EXE_LOCATION)+"\"".replace("/", "\\");
 		String ppcmd = UserSettings.ppexeStartupCmds.replace("[pptfile]", "\""+fullpath+"\"");
 		return pploc + " " + ppcmd;
 	}
@@ -57,8 +59,8 @@ public class Helper {
 	 * replace placeholder from UserSettings.ppexeLocation
 	 * @return
 	 */
-	public static String[] getPPProcessCmd(){
-		String processname = new File(UserSettings.ppexeLocation).getName().replace("\"", "").replace("'", "");
+	public String[] getPPProcessCmd(){
+		String processname = new File(this.uS.ppexeLocation).getName().replace("\"", "").replace("'", "");
 		String[] ret = UserSettings.tasklistCmds;
 		ret[2] = ret[2].replace("[ppexe]", "\""+processname+"\"");
 		return ret;

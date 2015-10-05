@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import net.coldbyte.ppinfscr.interfaces.IfHealthListener;
+import net.coldbyte.ppinfscr.interfaces.IfKillable;
 import net.coldbyte.ppinfscr.io.IOHandler;
 import net.coldbyte.ppinfscr.settings.DefaultSettings;
 import net.coldbyte.ppinfscr.ui.Output;
@@ -15,7 +16,7 @@ import net.coldbyte.ppinfscr.ui.Output;
 * See COPYING.txt
 *
 */
-public abstract class HealthListener implements IfHealthListener{
+public abstract class HealthListener implements IfHealthListener, IfKillable{
 	
 	private final IOHandler io = new IOHandler();
 	private final HealthListener inst = this;
@@ -53,7 +54,7 @@ public abstract class HealthListener implements IfHealthListener{
 	/**
 	 * Use this to properly exit the listener thread
 	 */
-	protected void killThread(){
+	public void killThread(){
 		this.killtoggle = true;
 		this.mysrvTimer.cancel();
 	}

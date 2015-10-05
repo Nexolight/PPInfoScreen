@@ -16,6 +16,7 @@ import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.Dispatch;
 import com.jacob.com.Variant;
 
+import net.coldbyte.ppinfscr.interfaces.IfKillable;
 import net.coldbyte.ppinfscr.interfaces.IfPPBot;
 import net.coldbyte.ppinfscr.io.IOHandler;
 import net.coldbyte.ppinfscr.settings.UserSettings;
@@ -29,9 +30,11 @@ import net.coldbyte.ppinfscr.util.Helper;
  * See COPYING.txt
  *
  */
-public abstract class PPBot implements IfPPBot{
+public abstract class PPBot implements IfPPBot, IfKillable{
 	private final IOHandler io = new IOHandler();
 	private final Output out = new Output(this.getClass().getName());
+	private final UserSettings uS = new UserSettings();
+	private final Helper helper = new Helper();
 	private boolean killtoggle = false;
 	private PPBot inst = this;
 	private Timer mysrvTimer;
@@ -73,7 +76,7 @@ public abstract class PPBot implements IfPPBot{
 				}
 			}
 		};
-		t.schedule(mysrv, 0, UserSettings.ppNextActionDelay);
+		t.schedule(mysrv, 0, this.uS.ppNextActionDelay);
 	}
 	
 	
@@ -83,7 +86,7 @@ public abstract class PPBot implements IfPPBot{
 	private void startPPStatus(Timer t){
 		TimerTask mysrv = new TimerTask(){
 			
-			private ProcessBuilder pbTskl = new ProcessBuilder(Helper.getPPProcessCmd());
+			private ProcessBuilder pbTskl = new ProcessBuilder(helper.getPPProcessCmd());
 			private Process processTskl;
 			private BufferedReader stdinTskl, stderrTskl;
 			
@@ -124,7 +127,7 @@ public abstract class PPBot implements IfPPBot{
 								this.openedFile = inst.fileQuerys.get(fileQuerys.size() -1);
 								inst.fileQuerys = new ArrayList<File>();//remove all queries
 								try{
-									String cmds = Helper.getPPStartupCmd(openedFile.getAbsolutePath());
+									String cmds = helper.getPPStartupCmd(openedFile.getAbsolutePath());
 									this.pbPP = new ProcessBuilder(cmds);
 									this.processPP = this.pbPP.start();
 									this.stdinPP = new BufferedReader(new InputStreamReader(this.processPP.getInputStream())); //dont remove it will block
@@ -151,13 +154,13 @@ public abstract class PPBot implements IfPPBot{
 			}
 			
 		};
-		t.schedule(mysrv, 0, UserSettings.ppexeStateLookupDelay);
+		t.schedule(mysrv, 0, this.uS.ppexeStateLookupDelay);
 	}
 	
 	/**
 	 * Use this to properly exit the listener thread
 	 */
-	protected void killThread(){
+	public void killThread(){
 		this.killtoggle = true;
 		this.mysrvTimer.cancel();
 	}
