@@ -321,7 +321,12 @@ public class IOHandler {
 				while ((line = br.readLine()) != null) {
 					line = line.trim();
 					if(line.matches("^"+setting.name()+".*?\\=.*$")){
-						return line.split("=")[1].trim();
+						String[] splitline = line.split("=");
+						if(splitline.length == 2){
+							return splitline[1].trim();
+						}else{
+							return null;
+						}
 					}
 				}
 				br.close();

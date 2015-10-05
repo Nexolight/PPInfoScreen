@@ -57,6 +57,19 @@ public class MainThread{
 	 * @return
 	 */
 	private boolean checkSettings(){
+		GUISettings currentSettings = this.uS.getGUISettings();
+		if(!io.checkExistence(currentSettings.getPpExeLocation())){
+			out.cOut("The PowerPoint executable is unavailable - please set the path manually");
+			return false;
+		}
+		if(!new File(currentSettings.getPpExeLocation()).getName().matches(UserSettings.validPPEXEName)){
+			out.cOut("The executable file does not seem to be the PowerPoint executable (Wrong filename)");
+			return false;
+		}
+		if(!io.checkExistence(currentSettings.getApplicationRoot())){
+			out.cOut("Cannot find the application root - make sure you have write access to it");
+			return false;
+		}
 		return true;
 	}
 	
