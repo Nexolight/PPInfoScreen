@@ -69,6 +69,7 @@ public abstract class PPBot implements IfPPBot, IfKillable{
 			public void run() {
 				if(inst.mystate == PPBotState.BUSY){
 					try {
+						out.cInf("Show next slide");
 						this.mybot = new Robot();
 						this.mybot.keyPress(KeyEvent.VK_RIGHT);
 					} catch (AWTException e) {
