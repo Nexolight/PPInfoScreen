@@ -45,7 +45,7 @@ public class Helper {
 	}
 	
 	/**
-	 * Replace placeholder from UserSettings.ppexeStartupCmds
+	 * Get command to startup PowerPoint
 	 * @param fullpath
 	 * @return
 	 */
@@ -56,13 +56,23 @@ public class Helper {
 	}
 	
 	/**
-	 * replace placeholder from UserSettings.ppexeLocation
+	 * Get command to check status of PowerPoint
 	 * @return
 	 */
 	public String[] getPPProcessCmd(){
-		String processname = new File(this.uS.ppexeLocation).getName().replace("\"", "").replace("'", "");
+		String processname = new File(this.uS.ppexeLocation).getName();
 		String[] ret = UserSettings.tasklistCmds;
 		ret[2] = ret[2].replace("[ppexe]", "\""+processname+"\"");
+		return ret;
+	}
+	
+	/**
+	 * Get command to kill PowerPoint
+	 * @return
+	 */
+	public String[] getPPKillCmd(){
+		String[] ret = UserSettings.taskkillCmds;
+		ret[ret.length-1] = ret[ret.length-1].replace("[processname]", new File(this.uS.ppexeLocation).getName());
 		return ret;
 	}
 	

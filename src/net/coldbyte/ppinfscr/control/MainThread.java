@@ -61,29 +61,27 @@ public class MainThread{
 	 */
 	private void createConsole(){
 		this.wm.showConsole(new Callable<Void>(){
-
 			@Override
 			public Void call() throws Exception {
 				// app reset
 				return null;
 			}
-			
 		}, new Callable<Void>(){
-
 			@Override
 			public Void call() throws Exception {
-				// log clear
+				wm.clearConsole();
 				return null;
 			}
-			
 		}, new Callable<Void>(){
-
 			@Override
 			public Void call() throws Exception {
-				// close app
+				wm.closeWelcome();
+				wm.closeSettings();
+				stopServices();
+				wm.closeConsole();
+				System.exit(0);
 				return null;
 			}
-			
 		});
 	}
 	

@@ -3,6 +3,7 @@ package net.coldbyte.ppinfscr.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.Timer;
@@ -82,12 +83,81 @@ public class WindowManager {
 		
 		JButton resetApp = new JButton("Reset application");
 		p1.add(resetApp, "height 30, spany 1, spanx 2, align left");
+		resetApp.addMouseListener(new MouseListener(){
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				try {
+					onResetApp.call();
+				} catch (Exception e) {
+					out.cWarn("Cannot call callable - Exception", e);
+					e.printStackTrace();
+				}
+			}
+			@Override
+			public void mouseEntered(MouseEvent arg0) {	
+			}
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+			}
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+			}
+			@Override
+			public void mouseReleased(MouseEvent arg0) {	
+			}
+		});
 		
 		JButton clearLog = new JButton("Clear log");
 		p1.add(clearLog, "height 30, spany 1, spanx 2, align center");
+		clearLog.addMouseListener(new MouseListener(){
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				try {
+					onClearLog.call();
+				} catch (Exception e) {
+					out.cWarn("Cannot call callable - Exception", e);
+					e.printStackTrace();
+				}
+			}
+			@Override
+			public void mouseEntered(MouseEvent arg0) {	
+			}
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+			}
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+			}
+			@Override
+			public void mouseReleased(MouseEvent arg0) {	
+			}
+		});
 		
 		JButton closeApp = new JButton("Close application");
 		p1.add(closeApp, "height 30, spany 1, spanx 2, align right");
+		closeApp.addMouseListener(new MouseListener(){
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				try {
+					onCloseApp.call();
+				} catch (Exception e) {
+					out.cWarn("Cannot call callable - Exception", e);
+					e.printStackTrace();
+				}
+			}
+			@Override
+			public void mouseEntered(MouseEvent arg0) {	
+			}
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+			}
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+			}
+			@Override
+			public void mouseReleased(MouseEvent arg0) {	
+			}
+		});
 		
 		this.consoleWindow.setVisible(true);
 		p1.setVisible(true);

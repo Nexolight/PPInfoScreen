@@ -56,9 +56,10 @@ public class UserSettings {
 	public long datedFoldersLookupDelay 	= getLong(Settings.FOLDER_LOOKUP_DELAY);
 	public long ppexeStateLookupDelay 		= getLong(Settings.PP_STATE_LOOKUP_DELAY); //ms
 	
+	public static String[] taskkillCmds		= {"cmd.exe", "/C", "taskkill /F /IM [processname]"}; //[ppprocessname] will be replaced automatically
 	public static String ppexeStartupCmds 	= " -S [pptfile]"; //[pptfile] will be replaced automatically
 	public static String[] tasklistCmds 	= {"cmd.exe", "/C", "tasklist.exe | find [ppexe] /I"}; //[ppexe] will be replaced automatically
-
+	
 	public long ppNextActionDelay			= getLong(Settings.PP_NEXT_SHEET_DELAY); //ms
 	
 	

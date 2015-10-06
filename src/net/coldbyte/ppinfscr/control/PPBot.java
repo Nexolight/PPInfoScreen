@@ -154,7 +154,6 @@ public abstract class PPBot implements IfPPBot, IfKillable{
 					}
 				}
 			}
-			
 		};
 		t.schedule(mysrv, 0, this.uS.ppexeStateLookupDelay);
 	}
@@ -165,6 +164,19 @@ public abstract class PPBot implements IfPPBot, IfKillable{
 	public void killThread(){
 		this.killtoggle = true;
 		this.mysrvTimer.cancel();
+		this.killPowerPoint();
+	}
+	
+	private void killPowerPoint(){
+		try {
+			ProcessBuilder kPP = new ProcessBuilder(this.helper.getPPKillCmd());
+			Process processKPP = kPP.start();
+			BufferedReader stdinKPP = new BufferedReader(new InputStreamReader(processKPP.getInputStream())); //dont remove it will block
+			BufferedReader stderrKPP = new BufferedReader(new InputStreamReader(processKPP.getErrorStream())); //dont remove it will block
+		} catch (IOException e) {
+			out.cErr("Cannot kill PowerPoint process - Exception", e);
+			e.printStackTrace();
+		}
 	}
 	
 	/**
