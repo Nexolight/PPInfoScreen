@@ -34,6 +34,10 @@ public class MainThread{
 	 */
 	public MainThread(String[] args){
 		this.args = args;
+		this.wm = new WindowManager();
+		createConsole();
+		this.out = Output.getInstance();
+		this.out.setWM(this.wm);
 	}
 	
 	/**
@@ -41,10 +45,6 @@ public class MainThread{
 	 * Call prepare to create everything needed.
 	 */
 	public void start(){
-		this.wm = new WindowManager();
-		createConsole();
-		this.out = Output.getInstance();
-		this.out.setWM(this.wm);
 		this.uS = new UserSettings();
 		this.io = new IOHandler();
 		if(prepare()){
@@ -63,7 +63,14 @@ public class MainThread{
 		this.wm.showConsole(new Callable<Void>(){
 			@Override
 			public Void call() throws Exception {
-				// app reset
+				out.cWarn("Reset application structure - This will restore the inital state");
+				wm.closeWelcome();
+				wm.closeSettings();
+				stopServices();
+				io.saveSettings(uS.getDefaultGUISettings());
+				io.removeAll(new File(uS.ppinfscrRoot));
+				io.removeAll(new File(UserSettings.ppinfscrDefaultStruct));
+				start();
 				return null;
 			}
 		}, new Callable<Void>(){
@@ -75,6 +82,7 @@ public class MainThread{
 		}, new Callable<Void>(){
 			@Override
 			public Void call() throws Exception {
+				out.cInf("Reload application");
 				wm.closeWelcome();
 				wm.closeSettings();
 				stopServices();
@@ -113,6 +121,7 @@ public class MainThread{
 		this.wm.showWelcome(5000, new Callable<Void>(){
 			@Override
 			public Void call() throws Exception{
+				out.cInf("Startup interrupt - show settings");
 				wm.closeWelcome();
 				createSettings();
 				return null;
@@ -120,6 +129,7 @@ public class MainThread{
 		}, new Callable<Void>(){
 			@Override
 			public Void call() throws Exception {
+				out.cInf("No interrupt - start application");
 				wm.closeWelcome();
 				runServices();
 				return null;
@@ -137,19 +147,19 @@ public class MainThread{
 		this.wm.showSettings(currentSettings, new Callable<Void>(){
 			@Override
 			public Void call() throws Exception {
+				out.cInf("Save settings");
 				io.saveSettings(wm.getSettings());
 				wm.closeSettings();
 				stopServices();
-				wm.closeConsole();
 				start();
 				return null;
 			}
 		}, new Callable<Void>(){
 			@Override
 			public Void call() throws Exception {
+				out.cInf("Cancel - ignore setting changes");
 				wm.closeSettings();
 				stopServices();
-				wm.closeConsole();
 				start();
 				return null;
 			}

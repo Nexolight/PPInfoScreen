@@ -146,6 +146,10 @@ public class UserSettings {
 		return line;
 	}
 	
+	/**
+	 * Returns the GUI settings which can be non default
+	 * @return
+	 */
 	public GUISettings getGUISettings(){
 		GUISettings currentSettings = new GUISettings(	
 				getString(Settings.APPLICATION_ROOT),
@@ -156,6 +160,22 @@ public class UserSettings {
 		);
 		return currentSettings;
 	}
+	
+	/**
+	 * Returns the default gui settings
+	 * @return
+	 */
+	public GUISettings getDefaultGUISettings(){
+		GUISettings currentSettings = new GUISettings(	
+				DefaultSettings.ppinfscrRoot,
+				DefaultSettings.datedFoldersLookupDelay,
+				DefaultSettings.ppexeStateLookupDelay, 
+				DefaultSettings.ppNextActionDelay, 
+				DefaultSettings.ppexeLocation
+		);
+		return currentSettings;
+	}
+	
 	
 	/**
 	 * This will build and return a new configuration file as string

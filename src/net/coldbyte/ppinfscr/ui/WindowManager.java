@@ -3,6 +3,7 @@ package net.coldbyte.ppinfscr.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
@@ -47,6 +48,15 @@ public class WindowManager {
 	private GUISettings currentSettings = null;
 	private JFrame consoleWindow = null;
 	private JTextPane consoleContent = null;
+	private Dimension screenSize = null;
+	
+	private static enum DisplayPosition{
+		CENTER,
+		TOPLEFT,
+		TOPRIGHT,
+		BOTTOMLEFT,
+		BOTTOMRIGHT
+	}
 	
 	
 	/**
@@ -69,6 +79,7 @@ public class WindowManager {
 			out.cWarn("Cannot switch look and feel - UnsupportedLookAndFeelException", e);
 			e.printStackTrace();
 		}
+		this.screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	}
 	
 	
@@ -81,12 +92,13 @@ public class WindowManager {
 	public void showConsole(Callable<Void> onResetApp, Callable<Void> onClearLog, Callable onCloseApp){
 		int w = 720;
 		int h = 480;
+		int[] pos = getPos(DisplayPosition.TOPRIGHT,w,h);
 		
 		MigLayout mlw = new MigLayout("fill, nogrid");
 		this.consoleWindow = new JFrame("PPInfoScreen - Console");
 		this.consoleWindow.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 		this.consoleWindow.setLayout(mlw);
-		this.consoleWindow.setBounds(400, 0, w, h);
+		this.consoleWindow.setBounds(pos[0], pos[1], w, h);
 		this.consoleWindow.setResizable(false);
 		this.consoleWindow.setPreferredSize(new Dimension(w,h));
 		this.consoleWindow.setMinimumSize(new Dimension(w,h));
@@ -97,9 +109,9 @@ public class WindowManager {
 		this.consoleWindow.setContentPane(p1);
 		
 		this.consoleContent = new JTextPane();
-		this.consoleContent.setAutoscrolls(true);
 		this.consoleContent.setContentType("text/html");
 		JScrollPane jsp = new JScrollPane(this.consoleContent);
+		jsp.setAutoscrolls(true);
 		jsp.setHorizontalScrollBar(new JScrollBar());
 		p1.add(jsp, "spanx 9, growx, growy, spany 1, pushy");
 		JButton resetApp = new JButton("Reset application");
@@ -212,6 +224,7 @@ public class WindowManager {
 	public void closeConsole(){
 		if(this.consoleWindow != null){
 			this.consoleWindow.dispose();
+			this.consoleContent = null;
 		}
 	}
 	
@@ -224,13 +237,14 @@ public class WindowManager {
 	public void showWelcome(long interruptDelay, Callable<Void> onSettings, Callable<Void> onNonInterrput){
 		int w = 300;
 		int h = 200;
+		int[] pos = getPos(DisplayPosition.CENTER,w,h);
 		this.welcomeWindowInterrupted = false;
 		
 		MigLayout mlw = new MigLayout("fill, nogrid");
 		this.welcomeWindow = new JFrame("PPInfoScreen - Welcome");
 		this.welcomeWindow.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 		this.welcomeWindow.setLayout(mlw);
-		this.welcomeWindow.setBounds(0, 0, w, h);
+		this.welcomeWindow.setBounds(pos[0], pos[1], w, h);
 		this.welcomeWindow.setResizable(false);
 		this.welcomeWindow.setPreferredSize(new Dimension(w,h));
 		this.welcomeWindow.setMinimumSize(new Dimension(w,h));
@@ -320,13 +334,14 @@ public class WindowManager {
 	public void showSettings(GUISettings settings, Callable<Void> onSaveAndProceed, Callable<Void> onCancel){
 		int w = 550;
 		int h = 450;
+		int[] pos = getPos(DisplayPosition.CENTER,w,h);
 		this.currentSettings = settings;
 		
 		MigLayout mlw = new MigLayout("fill, nogrid");
 		this.settingsWindow = new JFrame("PPInfoScreen - Settings");
 		this.settingsWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE );
 		this.settingsWindow.setLayout(mlw);
-		this.settingsWindow.setBounds(0, 0, w, h);
+		this.settingsWindow.setBounds(pos[0], pos[1], w, h);
 		this.settingsWindow.setResizable(false);
 		MigLayout mlp1 = new MigLayout("fillx, wrap 10, inset 20 20 20 20");
 		JPanel p1 = new JPanel();
@@ -499,6 +514,45 @@ public class WindowManager {
 	 */
 	public GUISettings getSettings(){
 		return this.currentSettings;
+	}
+	
+	
+	/**
+	 * This will return a position for a frame with the given size
+	 * @param pos
+	 * @param w
+	 * @param h
+	 * @return
+	 */
+	private int[] getPos(DisplayPosition pos, int w, int h){
+		double dispW = screenSize.getWidth();
+		double dispH = screenSize.getHeight();
+		int borderX = (int) ((dispW / 100)*2);
+		int borderY = (int) ((dispH / 100)*2);
+		int retX = 0;
+		int retY = 0;
+		if(pos == DisplayPosition.CENTER){
+			retX = (int) Math.round((dispW / 2) - (w/2));
+			retY = (int) Math.round((dispH / 2) - (h/2));
+		}
+		if(pos == DisplayPosition.TOPLEFT){
+			retX = 0 + borderX;
+			retY = 0 + borderY;
+		}
+		if(pos == DisplayPosition.TOPRIGHT){
+			retX = (int) ((dispW - w) - borderX);
+			retY = (int) (0 + borderY);
+		}
+		if(pos == DisplayPosition.BOTTOMLEFT){
+			retX = 0 + borderX;
+			retY = (int) ((dispH - h) - borderY);
+		}
+		if(pos == DisplayPosition.BOTTOMRIGHT){
+			retX = (int) ((dispW - w) - borderX);
+			retY = (int) ((dispH - h) - borderY);
+		}
+		int[] xy = {retX,retY};
+		return xy;
 	}
 	
 }
