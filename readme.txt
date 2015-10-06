@@ -5,5 +5,5 @@ a windows server behind. The main goal is to allow the administration to simply
 put on any before made PowerPoint presentation and let it automatically slide over the
 info screen at the time they want. 
 
-This is just a max. 2 weeks project. It just have to work quick and dirty and
+This is a max. 2 weeks project. It just have to work quick and dirty and
 as simple as possible.
