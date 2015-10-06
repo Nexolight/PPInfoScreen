@@ -171,7 +171,7 @@ public class WindowManager {
 						Thread.sleep(1000);
 						iD -= 1000;
 					} catch (InterruptedException e) {
-						out.cOut("Cannot delay thread - InterruptedException");
+						out.cWarn("Cannot delay thread - InterruptedException",e);
 						e.printStackTrace();
 					}
 				}
@@ -179,7 +179,7 @@ public class WindowManager {
 					try {
 						nonInterrupt.call();
 					} catch (Exception e) {
-						out.cOut("Cannot call callable - Exception");
+						out.cWarn("Cannot call callable - Exception",e);
 						e.printStackTrace();
 					}
 				}
@@ -194,7 +194,7 @@ public class WindowManager {
 				try {
 					onSettings.call();
 				} catch (Exception e1) {
-					out.cOut("Cannot call callable - Exception");
+					out.cWarn("Cannot call callable - Exception", e1);
 					e1.printStackTrace();
 				}
 			}
@@ -348,7 +348,7 @@ public class WindowManager {
 				try {
 					onSaveAndProceed.call();
 				} catch (Exception e) {
-					out.cOut("Cannot call callable - Exception");
+					out.cWarn("Cannot call callable - Exception",e);
 					e.printStackTrace();
 				}
 			}
@@ -372,7 +372,7 @@ public class WindowManager {
 				try {
 					onCancel.call();
 				} catch (Exception e) {
-					out.cOut("Cannot call callable - Exception");
+					out.cWarn("Cannot call callable - Exception", e);
 					e.printStackTrace();
 				}
 			}

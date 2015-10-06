@@ -71,7 +71,7 @@ public class IOHandler {
 				return null;
 			}
 		}else{
-			out.cOut("The given File " + file.getAbsolutePath() + " is a folder - I will not copy");
+			out.cWarn("The given File " + file.getAbsolutePath() + " is a folder - I will not copy");
 			return null;
 		}
 	}
@@ -159,18 +159,18 @@ public class IOHandler {
 					pptfiles.add(onefile);
 				}else{
 					if(removeInvalid){
-						out.cOut("The format of the file " + onefile.getName() + " is not supported - remove");
+						out.cWarn("The format of the file " + onefile.getName() + " is not supported - remove");
 						removeAll(onefile);
 					}else{
-						out.cOut("The format of the file " + onefile.getName() + " is not supported");
+						out.cWarn("The format of the file " + onefile.getName() + " is not supported");
 					}
 				}
 			}else{
 				if(removeInvalid){
-					out.cOut("The Directory " + onefile.getAbsolutePath() + " is not a file - remove");
+					out.cWarn("The Directory " + onefile.getAbsolutePath() + " is not a file - remove");
 					removeAll(onefile);
 				}else{
-					out.cOut("The Directory " + onefile.getAbsolutePath() + " is not a file");
+					out.cWarn("The Directory " + onefile.getAbsolutePath() + " is not a file");
 				}
 			}
 		}
@@ -204,18 +204,18 @@ public class IOHandler {
 						}
 						
 					} catch (ParseException e) {
-						out.cOut("Cannot parse foldername: " + dname);
+						out.cWarn("Cannot parse foldername: " + dname, e);
 						e.printStackTrace();
 					}
 				}else{
-					out.cOut("The name of the directory is wrong : " + dir.getName() + " correct is mm.dd.yyyy_hhmm");
+					out.cWarn("The name of the directory is wrong : " + dir.getName() + " correct is mm.dd.yyyy_hhmm");
 				}
 			}else{
 				if(removeInvalid){
-					out.cOut("The file " + dir.getAbsolutePath() + " is not a directory - remove");
+					out.cWarn("The file " + dir.getAbsolutePath() + " is not a directory - remove");
 					removeAll(dir);
 				}else{
-					out.cOut("The file " + dir.getAbsolutePath() + " is not a directory");
+					out.cWarn("The file " + dir.getAbsolutePath() + " is not a directory");
 				}
 			}
 		}
@@ -247,14 +247,14 @@ public class IOHandler {
 			for(String path : dirsPath){
 				File onefile = new File(path);
 				if(!onefile.isDirectory()){
-					out.cOut("Folder: " + onefile + " does not exist - I will create it");
+					out.cInf("Folder: " + onefile + " does not exist - I will create it");
 					onefile.mkdirs();
 				}
 			}
 			for(String path : filesPath){
 				File onefile = new File(path);
 				if(!onefile.isFile()){
-					out.cOut("File: " + onefile + " does not exist - I will create it");
+					out.cInf("File: " + onefile + " does not exist - I will create it");
 					onefile.createNewFile();
 				}
 			}
@@ -274,7 +274,7 @@ public class IOHandler {
 		InputStream in = getClass().getResourceAsStream(pathinjar);
 		
 		if(in == null){
-			out.cOut("Template file in jar "+ pathinjar + " does not exist");
+			out.cWarn("Template file in jar "+ pathinjar + " does not exist - please contact the developer");
 			return false;
 		}
 		File mydst = new File(dst);
@@ -292,17 +292,17 @@ public class IOHandler {
 					in.close();
 					bout.close();
 				} catch (IOException e) {
-					out.cOut("Cannot create / write " + dst);
+					out.cWarn("Cannot create / write " + dst, e);
 					e.printStackTrace();
 					return false;
 				}
-				out.cOut("Extracted template " + pathinjar + " to " + dst);
+				out.cInf("Extracted template " + pathinjar + " to " + dst);
 				return true;
 			}else{
 				return true;
 			}
 		}else{
-			out.cOut("Required folder does not exist " + mydst.getParentFile().getPath());
+			out.cErr("Required folder does not exist " + mydst.getParentFile().getPath());
 			return false;
 		}
 	}
@@ -331,11 +331,11 @@ public class IOHandler {
 				}
 				br.close();
 			} catch (FileNotFoundException e) {
-				out.cOut("Cannot read setting " + setting.name() + " FileNotFoundException");
+				out.cWarn("Cannot read setting " + setting.name() + " FileNotFoundException", e);
 				e.printStackTrace();
 				return null;
 			} catch (IOException e) {
-				out.cOut("Cannot read setting " + setting.name() + " IOException");
+				out.cWarn("Cannot read setting " + setting.name() + " IOException", e);
 				e.printStackTrace();
 				return null;
 			}
@@ -361,13 +361,13 @@ public class IOHandler {
 					String newSettings = uS.getNewSettingsContent(currentSettings);
 					fout.write(newSettings.getBytes());
 					fout.close();
-					out.cOut("Settings saved");
+					out.cInf("Settings saved");
 				} catch (FileNotFoundException e) {
-					out.cOut("Cannot write to settings file - FileNotFoundException");
+					out.cWarn("Cannot write to settings file - FileNotFoundException",e);
 					e.printStackTrace();
 				}
 			} catch (IOException e) {
-				out.cOut("Cannot save Settings - IOException");
+				out.cWarn("Cannot save Settings - IOException",e);
 				e.printStackTrace();
 			}
 		}

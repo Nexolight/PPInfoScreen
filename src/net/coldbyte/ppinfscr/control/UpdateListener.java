@@ -46,7 +46,7 @@ public abstract class UpdateListener implements IfUpdateListener, IfKillable{
 		this.coi = coi;
 		this.mysrvTimer = new Timer();
 		createUpdateService(this.mysrvTimer);
-		out.cOut("Started directory update listener thread");
+		out.cInf("Started directory update listener thread");
 	}
 	
 	/**

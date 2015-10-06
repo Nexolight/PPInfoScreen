@@ -59,22 +59,70 @@ public class Output {
 	 * @param input
 	 * @return
 	 */
-	private String wrapWarn(String input){
+	private String wrapWARN(String input){
 		return "<span style=\"color:#a2a32b;font-family:Verdana;font-size:11;font-weight:bold;\">"+input+"</span>";
 	}
 	
+	/**
+	 * This adds a new line to the HTML string
+	 * @param input
+	 * @return
+	 */
 	private String newLine(String input){
 		return input + "<br>";
 	}
 	
+	/**
+	 * Write an error to all consoles including the exception
+	 * @param input
+	 * @param exception
+	 */
+	public void cErr(Object input, Object exception){
+		cErr(newLine(input.toString())+"-----> "+exception.toString());
+	}
 	
-	
-	public void cOut(Object input){
-		System.out.println(input);
+	/**
+	 * Write an error to all consoles
+	 * @param input
+	 */
+	public void cErr(Object input){
+		System.out.println("ERROR: " + input);
 		if(singleOutput.wm != null){
-			singleOutput.wm.appendToConsole(newLine(wrapINF(input.toString())));
+			singleOutput.wm.appendToConsole(newLine(wrapINF("ERROR: " + input.toString())));
 		}
 	}
+	
+	/**
+	 * Write an info to all consoles
+	 * @param input
+	 */
+	public void cInf(Object input){
+		System.out.println("INFO:  " + input);
+		if(singleOutput.wm != null){
+			singleOutput.wm.appendToConsole(newLine(wrapINF("INFO:  " + input.toString())));
+		}
+	}
+	
+	/**
+	 * Write an warn to all consoles including the exception
+	 * @param input
+	 * @param exception
+	 */
+	public void cWarn(Object input, Object exception){
+		cWarn(newLine(input.toString())+"---->  "+exception.toString());
+	}
+	
+	/**
+	 * Write an warn to all consoles
+	 * @param input
+	 */
+	public void cWarn(Object input){
+		System.out.println("WARN:  " + input);
+		if(singleOutput.wm != null){
+			singleOutput.wm.appendToConsole(newLine(wrapWARN("WARN:  " + input.toString())));
+		}
+	}
+	
 	
 	/**
 	 * This will only print to the internal console not the visual one

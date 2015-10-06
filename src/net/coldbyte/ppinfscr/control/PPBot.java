@@ -53,9 +53,9 @@ public abstract class PPBot implements IfPPBot, IfKillable{
 		
 		this.mysrvTimer = new Timer();
 		startPPStatus(this.mysrvTimer);
-		out.cOut("Started pp status checker thread");
+		out.cInf("Started PowerPoint status checker thread");
 		startClicker(this.mysrvTimer);
-		out.cOut("Started pp clicker thread");
+		out.cInf("Started PowerPoint clicker thread");
 	}
 	
 	/**
@@ -72,7 +72,7 @@ public abstract class PPBot implements IfPPBot, IfKillable{
 						this.mybot = new Robot();
 						this.mybot.keyPress(KeyEvent.VK_RIGHT);
 					} catch (AWTException e) {
-						out.cOut("Cannot perform a click/keystroke - AWTException");
+						out.cErr("Cannot perform a click/keystroke - AWTException", e);
 						e.printStackTrace();
 					}
 				}
@@ -135,7 +135,7 @@ public abstract class PPBot implements IfPPBot, IfKillable{
 									this.stdinPP = new BufferedReader(new InputStreamReader(this.processPP.getInputStream())); //dont remove it will block
 									this.stderrPP = new BufferedReader(new InputStreamReader(this.processPP.getErrorStream())); //dont remove it will block
 								} catch (IOException e) {
-									out.cOut("Cannot start PowerPoint - IOExeption");
+									out.cErr("Cannot start PowerPoint - IOExeption", e);
 									e.printStackTrace();
 								}
 							}
@@ -145,7 +145,7 @@ public abstract class PPBot implements IfPPBot, IfKillable{
 							stateChanged(inst.mystate, PPBotState.ERROR);
 							inst.mystate = PPBotState.ERROR;
 						}
-						out.cOut("Cannot start tasklist - IOExeption");
+						out.cErr("Cannot start tasklist - IOExeption", e);
 						e.printStackTrace();
 					}
 					

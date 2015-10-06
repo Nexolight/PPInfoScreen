@@ -94,15 +94,15 @@ public class MainThread{
 	private boolean checkSettings(){
 		GUISettings currentSettings = this.uS.getGUISettings();
 		if(!io.checkExistence(currentSettings.getPpExeLocation())){
-			out.cOut("The PowerPoint executable is unavailable - please set the path manually");
+			out.cWarn("The PowerPoint executable is unavailable - please set the path manually");
 			return false;
 		}
 		if(!new File(currentSettings.getPpExeLocation()).getName().matches(UserSettings.validPPEXENameRegex)){
-			out.cOut("The executable file does not seem to be the PowerPoint executable (Wrong filename)");
+			out.cWarn("The executable file does not seem to be the PowerPoint executable (Wrong filename)");
 			return false;
 		}
 		if(!io.checkExistence(currentSettings.getApplicationRoot())){
-			out.cOut("Cannot find the application root - make sure you have write access to it");
+			out.cErr("Cannot find the application root - make sure you have write access to it");
 			return false;
 		}
 		return true;
@@ -166,7 +166,7 @@ public class MainThread{
 		if (io.createRequired(this.uS.requiredDirs, this.uS.requiredFiles) &&
 			io.extractTemplate(this.uS.ppinfscrSetFile_JAR, UserSettings.ppinfscrSetFile_OUT) &&
 			io.extractTemplate(this.uS.ppinfscrOptTmpl_JAR, this.uS.ppinfscrOptTmpl_OUT)){
-			out.cOut("Application structure is ok!");
+			out.cInf("Application structure is ok!");
 			if(Helper.is64()){
 				System.loadLibrary("jacob-1.18-x64");
 			}else{
@@ -174,7 +174,7 @@ public class MainThread{
 			}
 			return true;
 		}else{
-			out.cOut("Could not create required files and folders. Please check the base base path of the application and make sure you have write access to them");
+			out.cErr("Could not create required files and folders. Please check the base base path of the application and make sure you have write access to them");
 			return false;
 		}
 	}
@@ -198,7 +198,7 @@ public class MainThread{
 		this.ppbot = new PPBot(){
 			@Override
 			public void stateChanged(PPBotState oldstate, PPBotState newstate) {
-				out.cOut("PPBot changed state from: " + oldstate.name() + " to: " + newstate.name());
+				out.cInf("PowerPoint bot changed state from: " + oldstate.name() + " to: " + newstate.name());
 			}
 		};
 		
@@ -212,7 +212,7 @@ public class MainThread{
 				if(updated != null){
 					newstr = updated.getName();
 				}
-				out.cOut("Latest container ("+oldstr+") was updated new one is: " + newstr);
+				out.cInf("Latest container ("+oldstr+") was updated new one is: " + newstr);
 			}
 
 			@Override
@@ -224,13 +224,13 @@ public class MainThread{
 				if(updated != null){
 					newstr = updated.getName();
 				}
-				out.cOut("Latest file ("+oldstr+") was updated new one is: " + newstr);
+				out.cInf("Latest file ("+oldstr+") was updated new one is: " + newstr);
 				ppbot.openNew(updated);
 			}
 
 			@Override
 			public void onDoCloseAll() {
-				out.cOut("No files or directories found - close everything");
+				out.cWarn("No files or directories found - close everything");
 			}
 		};
 	}
