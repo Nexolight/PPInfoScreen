@@ -26,12 +26,12 @@ import net.coldbyte.ppinfscr.util.Helper;
  *
  */
 public abstract class PPBot implements IfPPBot, IfKillable{
-	private final IOHandler io = new IOHandler();
-	private final Output out = new Output(this.getClass().getName());
-	private final UserSettings uS = new UserSettings();
-	private final Helper helper = new Helper();
-	private boolean killtoggle = false;
-	private PPBot inst = this;
+	private final IOHandler io;
+	private final Output out;
+	private final UserSettings uS;
+	private final Helper helper;
+	private boolean killtoggle;
+	private PPBot inst;
 	private Timer mysrvTimer;
 	public enum PPBotState{
 		READY, BUSY, INIT, ERROR
@@ -44,6 +44,13 @@ public abstract class PPBot implements IfPPBot, IfKillable{
 	 * which should help to display and control the latest files
 	 */
 	public PPBot(){
+		this.out = Output.getInstance();
+		this.io = new IOHandler();
+		this.uS = new UserSettings();
+		this.helper = new Helper();
+		this.killtoggle = false;
+		this.inst = this;
+		
 		this.mysrvTimer = new Timer();
 		startPPStatus(this.mysrvTimer);
 		out.cOut("Started pp status checker thread");

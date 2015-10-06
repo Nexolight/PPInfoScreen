@@ -2,7 +2,6 @@ package net.coldbyte.ppinfscr.control;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
 import net.coldbyte.ppinfscr.interfaces.IfHealthListener;
 import net.coldbyte.ppinfscr.interfaces.IfKillable;
 import net.coldbyte.ppinfscr.io.IOHandler;
@@ -16,16 +15,20 @@ import net.coldbyte.ppinfscr.io.IOHandler;
 */
 public abstract class HealthListener implements IfHealthListener, IfKillable{
 	
-	private final IOHandler io = new IOHandler();
-	private final HealthListener inst = this;
-	private Output out = new Output(this.getClass().getName());
-	private boolean killtoggle = false;
+	private final IOHandler io;
+	private final HealthListener inst;
+	private Output out;
+	private boolean killtoggle;
 	private Timer mysrvTimer;
 	
 	/**
 	 * Use this class to keep the program structure clean
 	 */
 	public HealthListener(){
+		this.out = Output.getInstance();
+		this.io = new IOHandler();
+		this.inst = this;
+		this.killtoggle = false;
 		this.mysrvTimer = new Timer();
 		createHealthService(this.mysrvTimer);
 	}

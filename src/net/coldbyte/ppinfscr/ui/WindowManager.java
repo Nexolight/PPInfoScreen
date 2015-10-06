@@ -1,8 +1,10 @@
 package net.coldbyte.ppinfscr.ui;
 
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
@@ -14,7 +16,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Element;
+import javax.swing.text.StyledDocument;
+import javax.swing.text.html.HTMLDocument;
 
 import net.coldbyte.ppinfscr.control.Output;
 import net.coldbyte.ppinfscr.models.GUISettings;
@@ -28,19 +35,20 @@ import net.miginfocom.swing.MigLayout;
  *
  */
 public class WindowManager {
-	private Output out = new Output(this.getClass().getName());
+	private Output out;
 	private JFrame welcomeWindow = null;
 	private boolean welcomeWindowInterrupted = false;
 	private JFrame settingsWindow = null;
 	private GUISettings currentSettings = null;
 	private JFrame consoleWindow = null;
+	private JTextPane consoleContent = null;
 	
 	
 	/**
 	 * Use this to display parts of the user interface
 	 */
 	public WindowManager(){
-
+		this.out = Output.getInstance();
 	}
 	
 	
@@ -68,8 +76,9 @@ public class WindowManager {
 		p1.setLayout(mlp1);
 		this.consoleWindow.setContentPane(p1);
 		
-		JTextArea content = new JTextArea();
-		p1.add(content, "spanx 9, spany 8, growx, growy, pushy, wrap");
+		this.consoleContent = new JTextPane();
+		this.consoleContent.setContentType("text/html");
+		p1.add(consoleContent, "spanx 9, spany 8, growx, growy, pushy, wrap");
 		
 		JButton resetApp = new JButton("Reset application");
 		p1.add(resetApp, "height 30, spany 1, spanx 2, align left");
@@ -82,6 +91,37 @@ public class WindowManager {
 		
 		this.consoleWindow.setVisible(true);
 		p1.setVisible(true);
+	}
+	
+	/**
+	 *  This will append the given input as red text into the visual console
+	 */
+	public void appendToConsole(String htmlString){
+        HTMLDocument cmdashtml = (HTMLDocument)this.consoleContent.getStyledDocument();
+        Element last = cmdashtml.getParagraphElement(cmdashtml.getLength());
+        try {
+        	cmdashtml.insertBeforeEnd(last, htmlString);
+        } catch (BadLocationException ex) {
+        	out.silentOut("Unable to write to the visual console - BadLocationException");
+        } catch (IOException ex) {
+        	out.silentOut("Unable to write to the visual console - IOException");
+        }
+	}
+	
+	/**
+	 * This will clear the console
+	 */
+	public void clearConsole(){
+		this.consoleContent.setText("");
+	}
+	
+	/**
+	 * Closes the console window without any action
+	 */
+	public void closeConsole(){
+		if(this.consoleWindow != null){
+			this.consoleWindow.dispose();
+		}
 	}
 	
 	/**

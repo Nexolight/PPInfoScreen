@@ -31,13 +31,13 @@ import net.coldbyte.ppinfscr.settings.UserSettings.Settings;
  *
  */
 public class IOHandler {
-	private Output out = new Output(this.getClass().getName());
+	private Output out;
 	
 	/**
 	 * Use this class to handle the files where this program accesses to
 	 */
 	public IOHandler(){
-		
+		this.out = Output.getInstance();
 	}
 	
 	
@@ -361,6 +361,7 @@ public class IOHandler {
 					String newSettings = uS.getNewSettingsContent(currentSettings);
 					fout.write(newSettings.getBytes());
 					fout.close();
+					out.cOut("Settings saved");
 				} catch (FileNotFoundException e) {
 					out.cOut("Cannot write to settings file - FileNotFoundException");
 					e.printStackTrace();

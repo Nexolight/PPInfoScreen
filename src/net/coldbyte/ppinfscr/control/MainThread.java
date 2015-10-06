@@ -22,7 +22,7 @@ public class MainThread{
 	
 	private String[] args;
 	private IOHandler io;
-	private Output out = new Output(this.getClass().getName());
+	private Output out;
 	private WindowManager wm;
 	private UserSettings uS;
 	private HealthListener health;
@@ -42,9 +42,11 @@ public class MainThread{
 	 */
 	public void start(){
 		this.wm = new WindowManager();
+		createConsole();
+		this.out = Output.getInstance();
+		this.out.setWM(this.wm);
 		this.uS = new UserSettings();
 		this.io = new IOHandler();
-		createConsole();
 		if(prepare()){
 			if(checkSettings()){
 				createWelcome();
@@ -52,6 +54,37 @@ public class MainThread{
 				createSettings();
 			}
 		}
+	}
+	
+	/**
+	 * This will create the console view for further output
+	 */
+	private void createConsole(){
+		this.wm.showConsole(new Callable<Void>(){
+
+			@Override
+			public Void call() throws Exception {
+				// app reset
+				return null;
+			}
+			
+		}, new Callable<Void>(){
+
+			@Override
+			public Void call() throws Exception {
+				// log clear
+				return null;
+			}
+			
+		}, new Callable<Void>(){
+
+			@Override
+			public Void call() throws Exception {
+				// close app
+				return null;
+			}
+			
+		});
 	}
 	
 	/**
@@ -96,30 +129,6 @@ public class MainThread{
 		});
 	}
 	
-	/**
-	 * This will create the console which will be used together with the application
-	 */
-	private void createConsole(){
-		this.wm.showConsole(new Callable<Void>(){
-			@Override
-			public Void call() throws Exception {
-				// App reset
-				return null;
-			}
-		}, new Callable<Void>(){
-			@Override
-			public Void call() throws Exception {
-				// Log clear
-				return null;
-			}
-		}, new Callable<Void>(){
-			@Override
-			public Void call() throws Exception {
-				// Close app
-				return null;
-			}
-		});
-	}
 	
 	/**
 	 * This will open the settings gui where the user can edit some basic information
@@ -133,6 +142,7 @@ public class MainThread{
 				io.saveSettings(wm.getSettings());
 				wm.closeSettings();
 				stopServices();
+				wm.closeConsole();
 				start();
 				return null;
 			}
@@ -141,6 +151,7 @@ public class MainThread{
 			public Void call() throws Exception {
 				wm.closeSettings();
 				stopServices();
+				wm.closeConsole();
 				start();
 				return null;
 			}
@@ -155,7 +166,7 @@ public class MainThread{
 		if (io.createRequired(this.uS.requiredDirs, this.uS.requiredFiles) &&
 			io.extractTemplate(this.uS.ppinfscrSetFile_JAR, UserSettings.ppinfscrSetFile_OUT) &&
 			io.extractTemplate(this.uS.ppinfscrOptTmpl_JAR, this.uS.ppinfscrOptTmpl_OUT)){
-			out.cOut("Successfully created all required files");
+			out.cOut("Application structure is ok!");
 			if(Helper.is64()){
 				System.loadLibrary("jacob-1.18-x64");
 			}else{

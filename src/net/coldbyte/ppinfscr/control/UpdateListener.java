@@ -23,11 +23,11 @@ import net.coldbyte.ppinfscr.settings.UserSettings;
  */
 public abstract class UpdateListener implements IfUpdateListener, IfKillable{
 	
-	private final IOHandler io = new IOHandler();
-	private final UpdateListener inst = this;
-	private final UserSettings uS = new UserSettings();
-	private Output out = new Output(this.getClass().getName());
-	private boolean killtoggle = false;
+	private final IOHandler io;
+	private final UpdateListener inst;
+	private final UserSettings uS;
+	private Output out;
+	private boolean killtoggle;
 	private Timer mysrvTimer;
 	public enum ContainerOfInterest{
 		LATEST, INTIME, SPECIFIED
@@ -38,6 +38,11 @@ public abstract class UpdateListener implements IfUpdateListener, IfKillable{
 	 * Use this class to keep track of updates in the program structure
 	 */
 	public UpdateListener(ContainerOfInterest coi){
+		this.out = Output.getInstance();
+		this.io = new IOHandler();
+		this.inst = this;
+		this.uS = new UserSettings();
+		this.killtoggle = false;
 		this.coi = coi;
 		this.mysrvTimer = new Timer();
 		createUpdateService(this.mysrvTimer);
