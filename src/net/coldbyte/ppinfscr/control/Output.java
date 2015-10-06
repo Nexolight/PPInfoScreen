@@ -1,4 +1,4 @@
-package net.coldbyte.ppinfscr.ui;
+package net.coldbyte.ppinfscr.control;
 
 /**
  *
@@ -10,7 +10,7 @@ package net.coldbyte.ppinfscr.ui;
 public class Output {
 	
 	private String classname;
-	
+
 	/**
 	 * Use this class to write console output. It's basically a wrapper for future use
 	 */

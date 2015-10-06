@@ -6,8 +6,6 @@ import java.util.TimerTask;
 import net.coldbyte.ppinfscr.interfaces.IfHealthListener;
 import net.coldbyte.ppinfscr.interfaces.IfKillable;
 import net.coldbyte.ppinfscr.io.IOHandler;
-import net.coldbyte.ppinfscr.settings.DefaultSettings;
-import net.coldbyte.ppinfscr.ui.Output;
 
 /**
 *

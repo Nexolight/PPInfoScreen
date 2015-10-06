@@ -12,15 +12,10 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.jacob.activeX.ActiveXComponent;
-import com.jacob.com.Dispatch;
-import com.jacob.com.Variant;
-
 import net.coldbyte.ppinfscr.interfaces.IfKillable;
 import net.coldbyte.ppinfscr.interfaces.IfPPBot;
 import net.coldbyte.ppinfscr.io.IOHandler;
 import net.coldbyte.ppinfscr.settings.UserSettings;
-import net.coldbyte.ppinfscr.ui.Output;
 import net.coldbyte.ppinfscr.util.Helper;
 
 /**

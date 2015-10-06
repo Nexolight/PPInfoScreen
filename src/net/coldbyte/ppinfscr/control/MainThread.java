@@ -7,8 +7,6 @@ import net.coldbyte.ppinfscr.control.UpdateListener.ContainerOfInterest;
 import net.coldbyte.ppinfscr.io.IOHandler;
 import net.coldbyte.ppinfscr.models.GUISettings;
 import net.coldbyte.ppinfscr.settings.UserSettings;
-import net.coldbyte.ppinfscr.settings.UserSettings.Settings;
-import net.coldbyte.ppinfscr.ui.Output;
 import net.coldbyte.ppinfscr.ui.WindowManager;
 import net.coldbyte.ppinfscr.util.Helper;
 
@@ -43,6 +41,10 @@ public class MainThread{
 	 * Call prepare to create everything needed.
 	 */
 	public void start(){
+		this.wm = new WindowManager();
+		this.uS = new UserSettings();
+		this.io = new IOHandler();
+		createConsole();
 		if(prepare()){
 			if(checkSettings()){
 				createWelcome();
@@ -95,6 +97,31 @@ public class MainThread{
 	}
 	
 	/**
+	 * This will create the console which will be used together with the application
+	 */
+	private void createConsole(){
+		this.wm.showConsole(new Callable<Void>(){
+			@Override
+			public Void call() throws Exception {
+				// App reset
+				return null;
+			}
+		}, new Callable<Void>(){
+			@Override
+			public Void call() throws Exception {
+				// Log clear
+				return null;
+			}
+		}, new Callable<Void>(){
+			@Override
+			public Void call() throws Exception {
+				// Close app
+				return null;
+			}
+		});
+	}
+	
+	/**
 	 * This will open the settings gui where the user can edit some basic information
 	 * which is needed to run the prgram properly
 	 */
@@ -125,9 +152,6 @@ public class MainThread{
 	 * @return
 	 */
 	private boolean prepare(){
-		this.wm = new WindowManager();
-		this.uS = new UserSettings();
-		this.io = new IOHandler();
 		if (io.createRequired(this.uS.requiredDirs, this.uS.requiredFiles) &&
 			io.extractTemplate(this.uS.ppinfscrSetFile_JAR, UserSettings.ppinfscrSetFile_OUT) &&
 			io.extractTemplate(this.uS.ppinfscrOptTmpl_JAR, this.uS.ppinfscrOptTmpl_OUT)){

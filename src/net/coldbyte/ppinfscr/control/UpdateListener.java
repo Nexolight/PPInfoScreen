@@ -13,7 +13,6 @@ import net.coldbyte.ppinfscr.interfaces.IfUpdateListener;
 import net.coldbyte.ppinfscr.io.IOHandler;
 import net.coldbyte.ppinfscr.models.PPTContainer;
 import net.coldbyte.ppinfscr.settings.UserSettings;
-import net.coldbyte.ppinfscr.ui.Output;
 
 /**
  *

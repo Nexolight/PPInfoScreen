@@ -2,7 +2,6 @@ package net.coldbyte.ppinfscr.settings;
 
 import net.coldbyte.ppinfscr.io.IOHandler;
 import net.coldbyte.ppinfscr.models.GUISettings;
-import net.coldbyte.ppinfscr.settings.UserSettings.Settings;
 
 /**
  *

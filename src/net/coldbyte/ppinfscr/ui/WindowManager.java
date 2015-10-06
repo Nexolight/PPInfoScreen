@@ -1,10 +1,7 @@
 package net.coldbyte.ppinfscr.ui;
 
-import java.awt.Color;
+
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -15,17 +12,12 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import com.sun.glass.events.MouseEvent;
-
+import net.coldbyte.ppinfscr.control.Output;
 import net.coldbyte.ppinfscr.models.GUISettings;
-import net.coldbyte.ppinfscr.settings.UserSettings;
-import net.coldbyte.ppinfscr.settings.UserSettings.Settings;
-import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -41,6 +33,7 @@ public class WindowManager {
 	private boolean welcomeWindowInterrupted = false;
 	private JFrame settingsWindow = null;
 	private GUISettings currentSettings = null;
+	private JFrame consoleWindow = null;
 	
 	
 	/**
@@ -48,6 +41,47 @@ public class WindowManager {
 	 */
 	public WindowManager(){
 
+	}
+	
+	
+	/**
+	 * Show the console with additional buttons
+	 * @param onResetApp
+	 * @param onClearLog
+	 * @param onCloseApp
+	 */
+	public void showConsole(Callable<Void> onResetApp, Callable<Void> onClearLog, Callable onCloseApp){
+		int w = 720;
+		int h = 480;
+		
+		MigLayout mlw = new MigLayout("fill, nogrid");
+		this.consoleWindow = new JFrame("PPInfoScreen - Console");
+		this.consoleWindow.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+		this.consoleWindow.setLayout(mlw);
+		this.consoleWindow.setBounds(400, 0, w, h);
+		this.consoleWindow.setResizable(false);
+		this.consoleWindow.setPreferredSize(new Dimension(w,h));
+		this.consoleWindow.setMinimumSize(new Dimension(w,h));
+		
+		MigLayout mlp1 = new MigLayout("fill, wrap 9, inset 10 10 10 10, gap 0px 10px");
+		JPanel p1 = new JPanel();
+		p1.setLayout(mlp1);
+		this.consoleWindow.setContentPane(p1);
+		
+		JTextArea content = new JTextArea();
+		p1.add(content, "spanx 9, spany 8, growx, growy, pushy, wrap");
+		
+		JButton resetApp = new JButton("Reset application");
+		p1.add(resetApp, "height 30, spany 1, spanx 2, align left");
+		
+		JButton clearLog = new JButton("Clear log");
+		p1.add(clearLog, "height 30, spany 1, spanx 2, align center");
+		
+		JButton closeApp = new JButton("Close application");
+		p1.add(closeApp, "height 30, spany 1, spanx 2, align right");
+		
+		this.consoleWindow.setVisible(true);
+		p1.setVisible(true);
 	}
 	
 	/**
@@ -62,7 +96,7 @@ public class WindowManager {
 		this.welcomeWindowInterrupted = false;
 		
 		MigLayout mlw = new MigLayout("fill, nogrid");
-		this.welcomeWindow = new JFrame("Welcome");
+		this.welcomeWindow = new JFrame("PPInfoScreen - Welcome");
 		this.welcomeWindow.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 		this.welcomeWindow.setLayout(mlw);
 		this.welcomeWindow.setBounds(0, 0, w, h);
@@ -158,7 +192,7 @@ public class WindowManager {
 		this.currentSettings = settings;
 		
 		MigLayout mlw = new MigLayout("fill, nogrid");
-		this.settingsWindow = new JFrame("Settings");
+		this.settingsWindow = new JFrame("PPInfoScreen - Settings");
 		this.settingsWindow.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 		this.settingsWindow.setLayout(mlw);
 		this.settingsWindow.setBounds(0, 0, w, h);
@@ -332,7 +366,7 @@ public class WindowManager {
 	}
 	
 	/**
-	 * Thiw will return the current settings made in the gui
+	 * This will return the current settings made in the gui
 	 * @return
 	 */
 	public GUISettings getSettings(){

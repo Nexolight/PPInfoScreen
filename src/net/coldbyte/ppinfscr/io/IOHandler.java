@@ -17,11 +17,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import net.coldbyte.ppinfscr.control.Output;
 import net.coldbyte.ppinfscr.models.GUISettings;
 import net.coldbyte.ppinfscr.models.PPTContainer;
 import net.coldbyte.ppinfscr.settings.UserSettings;
 import net.coldbyte.ppinfscr.settings.UserSettings.Settings;
-import net.coldbyte.ppinfscr.ui.Output;
 
 /**
  *
