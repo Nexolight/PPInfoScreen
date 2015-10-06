@@ -15,9 +15,13 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
@@ -50,6 +54,21 @@ public class WindowManager {
 	 */
 	public WindowManager(){
 		this.out = Output.getInstance();
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e) {
+			out.cWarn("Cannot switch look and feel - ClassNotFoundException", e);
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			out.cWarn("Cannot switch look and feel - InstantiationException", e);
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			out.cWarn("Cannot switch look and feel - IllegalAccessException", e);
+			e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			out.cWarn("Cannot switch look and feel - UnsupportedLookAndFeelException", e);
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -72,17 +91,19 @@ public class WindowManager {
 		this.consoleWindow.setPreferredSize(new Dimension(w,h));
 		this.consoleWindow.setMinimumSize(new Dimension(w,h));
 		
-		MigLayout mlp1 = new MigLayout("fill, wrap 9, inset 10 10 10 10, gap 0px 10px");
+		MigLayout mlp1 = new MigLayout("fill, inset 10 10 10 10, gap 0px 10px, wrap 9");
 		JPanel p1 = new JPanel();
 		p1.setLayout(mlp1);
 		this.consoleWindow.setContentPane(p1);
 		
 		this.consoleContent = new JTextPane();
+		this.consoleContent.setAutoscrolls(true);
 		this.consoleContent.setContentType("text/html");
-		p1.add(consoleContent, "spanx 9, spany 8, growx, growy, pushy, wrap");
-		
+		JScrollPane jsp = new JScrollPane(this.consoleContent);
+		jsp.setHorizontalScrollBar(new JScrollBar());
+		p1.add(jsp, "spanx 9, growx, growy, spany 1, pushy");
 		JButton resetApp = new JButton("Reset application");
-		p1.add(resetApp, "height 30, spany 1, spanx 2, align left");
+		p1.add(resetApp, "height 30, spanx 3, align left");
 		resetApp.addMouseListener(new MouseListener(){
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -108,7 +129,7 @@ public class WindowManager {
 		});
 		
 		JButton clearLog = new JButton("Clear log");
-		p1.add(clearLog, "height 30, spany 1, spanx 2, align center");
+		p1.add(clearLog, "height 30, spanx 3, align center");
 		clearLog.addMouseListener(new MouseListener(){
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -134,7 +155,7 @@ public class WindowManager {
 		});
 		
 		JButton closeApp = new JButton("Close application");
-		p1.add(closeApp, "height 30, spany 1, spanx 2, align right");
+		p1.add(closeApp, "height 30, spanx 3, align right");
 		closeApp.addMouseListener(new MouseListener(){
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -303,7 +324,7 @@ public class WindowManager {
 		
 		MigLayout mlw = new MigLayout("fill, nogrid");
 		this.settingsWindow = new JFrame("PPInfoScreen - Settings");
-		this.settingsWindow.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+		this.settingsWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE );
 		this.settingsWindow.setLayout(mlw);
 		this.settingsWindow.setBounds(0, 0, w, h);
 		this.settingsWindow.setResizable(false);
@@ -382,24 +403,24 @@ public class WindowManager {
 		
 		//Folder lookup delay
 		JLabel lblFLUD = new JLabel("Set the lookup interval for new files");
-		JTextField txtbFLUD = new JTextField(String.valueOf(currentSettings.getFolderLookupDelay() / 1000));
-		JLabel lblFLUDFormat = new JLabel("seconds");
+		JTextField txtbFLUD = new JTextField(String.valueOf(currentSettings.getFolderLookupDelay()));
+		JLabel lblFLUDFormat = new JLabel("milliseconds");
 		p1.add(lblFLUD, "spanx 6, gaptop 10");
 		p1.add(txtbFLUD, "gaptop 10, width 75, height 30, spanx 2, align right");
 		p1.add(lblFLUDFormat, "gaptop 10, spanx 2, wrap");
 		
 		//PowerPoint state lookup delay
 		JLabel lblPPLUD = new JLabel("Set Powerpoint status check intervall");
-		JTextField txtbPPLUD = new JTextField(String.valueOf(currentSettings.getPpStateLookupDelay() / 1000));
-		JLabel lblPPLUDFormat = new JLabel("seconds");
+		JTextField txtbPPLUD = new JTextField(String.valueOf(currentSettings.getPpStateLookupDelay()));
+		JLabel lblPPLUDFormat = new JLabel("milliseconds");
 		p1.add(lblPPLUD, "spanx 6, gaptop 5");
 		p1.add(txtbPPLUD, "gaptop 5, width 75, height 30, spanx 2, align right");
 		p1.add(lblPPLUDFormat, "gaptop 5, spanx 2, wrap");
 		
 		//PowerPoint next sheet every n seconds
 		JLabel lblPPNSD = new JLabel("Set the 'next sheet' delay for PowerPoint");
-		JTextField txtbPPNSD = new JTextField(String.valueOf(currentSettings.getPpNextSheetDelay() / 1000));
-		JLabel lblPPNSDFormat = new JLabel("seconds");
+		JTextField txtbPPNSD = new JTextField(String.valueOf(currentSettings.getPpNextSheetDelay()));
+		JLabel lblPPNSDFormat = new JLabel("milliseconds");
 		p1.add(lblPPNSD, "spanx 6, gaptop 5");
 		p1.add(txtbPPNSD, "gaptop 5, width 75, height 30, spanx 2, align right");
 		p1.add(lblPPNSDFormat, "gaptop 5, spanx 2, wrap");
@@ -409,12 +430,9 @@ public class WindowManager {
 		saveProceed.addMouseListener(new MouseListener(){
 			@Override
 			public void mouseClicked(java.awt.event.MouseEvent arg0) {
-				
-				currentSettings.setFolderLookupDelay(Long.valueOf(txtbFLUD.getText()) * 1000);
-				currentSettings.setPpStateLookupDelay(Long.valueOf(txtbPPLUD.getText()) * 1000);
-				currentSettings.setPpNextSheetDelay(Long.valueOf(txtbPPNSD.getText()) * 1000);
-				
-				
+				currentSettings.setFolderLookupDelay(Long.valueOf(txtbFLUD.getText()));
+				currentSettings.setPpStateLookupDelay(Long.valueOf(txtbPPLUD.getText()));
+				currentSettings.setPpNextSheetDelay(Long.valueOf(txtbPPNSD.getText()));
 				try {
 					onSaveAndProceed.call();
 				} catch (Exception e) {

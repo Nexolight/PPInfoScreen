@@ -42,7 +42,7 @@ public class Output {
 	 * @return
 	 */
 	private String wrapERR(String input){
-		return "<span style=\"color:#b22b2b;font-family:Verdana;font-size:11;font-weight:bold;\">"+input+"</span>";
+		return "<span style='color:#b22b2b;font-family:Verdana;font-size:11'><b>"+input+"</b><</span>";
 	}
 	
 	/**
@@ -51,7 +51,7 @@ public class Output {
 	 * @return
 	 */
 	private String wrapINF(String input){
-		return "<span style=\"color:#31602b;font-family:Verdana;font-size:11;font-weight:bold;\">"+input+"</span>";
+		return "<span style='color:#31602b;font-family:Verdana;font-size:11'><b>"+input+"</b><</span>";
 	}
 	
 	/**
@@ -60,7 +60,7 @@ public class Output {
 	 * @return
 	 */
 	private String wrapWARN(String input){
-		return "<span style=\"color:#a2a32b;font-family:Verdana;font-size:11;font-weight:bold;\">"+input+"</span>";
+		return "<span style='color:#a2a32b;font-family:Verdana;font-size:11'><b>"+input+"</b></span>";
 	}
 	
 	/**
@@ -69,7 +69,7 @@ public class Output {
 	 * @return
 	 */
 	private String newLine(String input){
-		return input + "<br>";
+		return input + "<br />";
 	}
 	
 	/**
