@@ -9,6 +9,7 @@ This is for advanced users basic users read the /templates/example.pptx
 	1.1 Hint:
 	-------------------------------------------------------------------------------------
 	--> Use a network share and use this one as root folder for the program
+	--> You must enable the loop option in your presentations
 
 	2.0 Installation
 	-------------------------------------------------------------------------------------

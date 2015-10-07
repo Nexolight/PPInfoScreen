@@ -73,9 +73,9 @@ public class MainThread{
 				wm.closeWelcome();
 				wm.closeSettings();
 				stopServices();
-				io.saveSettings(uS.getDefaultGUISettings());
 				io.removeAll(new File(uS.getString(Settings.APPLICATION_ROOT)));
 				io.removeAll(new File(UserSettings.ppinfscrDatadir));
+				io.saveSettings(uS.getDefaultGUISettings());
 				start();
 				return null;
 			}

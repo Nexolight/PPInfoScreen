@@ -98,7 +98,8 @@ public abstract class PPBot implements IfPPBot, IfKillable{
 			private Process processPP; 
 			private BufferedReader stdinPP, stderrPP;
 			
-			private File openedFile;
+			private File openedFile = null;
+			private boolean expectNewFile = false;
 			
 			@Override
 			public void run() {
@@ -114,7 +115,6 @@ public abstract class PPBot implements IfPPBot, IfKillable{
 								stateChanged(inst.mystate, PPBotState.BUSY);
 								inst.mystate = PPBotState.BUSY;
 							}
-							
 						}
 						if(outputTskl == null){
 							if(inst.mystate != PPBotState.READY){
@@ -125,11 +125,24 @@ public abstract class PPBot implements IfPPBot, IfKillable{
 						if(inst.fileQuerys.size() > 0){
 							if(inst.mystate == PPBotState.BUSY){
 								this.processPP.destroy();
-								io.removeAll(this.openedFile);
+								expectNewFile = true;
+							}else if (inst.mystate == PPBotState.READY){
+								expectNewFile = true;
 							}
-							if(inst.mystate == PPBotState.READY){
+						}
+						if(inst.mystate == PPBotState.READY){
+							if(expectNewFile){
+								File oldFile = this.openedFile;
 								this.openedFile = inst.fileQuerys.get(fileQuerys.size() -1);
 								inst.fileQuerys = new ArrayList<File>();//remove all queries
+								if(oldFile != null){
+									io.removeAll(oldFile);
+								}
+								expectNewFile = false;
+							}else{
+								out.cWarn("PowerPoint closed unexpectedly - reopen latest presentation");
+							}
+							if(this.openedFile != null){
 								try{
 									String cmds = helper.getPPStartupCmd(openedFile.getAbsolutePath());
 									this.pbPP = new ProcessBuilder(cmds);

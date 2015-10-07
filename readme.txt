@@ -1,9 +1,9 @@
 This project is subject of the WTFPL v2 licence. See COPYING.txt.
 
-PPInfoScreen is a tiny application to provide information on an information screen with 
-a windows server behind. The main goal is to allow the administration to simply
-put on any before made PowerPoint presentation and let it automatically slide over the
-info screen at the time they want. 
+PPInfoScreen is a simple application which was made to archive some kind of
+information screen. The Idea is simple. Place PowerPoint files into a shared
+folder, name them with a date and time and let them show up automatically on
+a server behind the physical screen.
 
-This is a max. 2 weeks project. It just have to work quick and dirty and
-as simple as possible.
+I got 2 weeks for this project so I will not give you any guarantee that it 
+will work without any issues. However I guess it is quiet stable.

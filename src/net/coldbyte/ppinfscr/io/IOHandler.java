@@ -77,6 +77,22 @@ public class IOHandler {
 	}
 	
 	/**
+	 * This will remove all files from the temporary folder except the given one
+	 * @param except
+	 */
+	public void cleanTmpExcept(File except){
+		File tmp = new File(UserSettings.ppinfscrDatadir);
+		if(tmp.exists()){
+			File[] children = tmp.listFiles();
+			for(File child : children){
+				if(!child.equals(except)){
+					removeAll(child);
+				}
+			}
+		}
+	}
+	
+	/**
 	 * This will return the File objects from each directory within the given basepath
 	 * @param basepath
 	 * @return
