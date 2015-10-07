@@ -24,7 +24,7 @@ public class UserSettings {
 	}
 	
 	public static String ppinfscrSetDir 		= System.getProperty("user.home").replace("\\", "/") + "/.PPInfoScreen/";
-	public static String ppinfscrDatadir		= ppinfscrSetDir + "/data/";
+	public static String ppinfscrDatadir		= ppinfscrSetDir + "data/";
 	public static String ppinfscrSetFile_OUT 	= ppinfscrSetDir + "settings.ini";
 	
 	private String ppinfscrRoot					= getString(Settings.APPLICATION_ROOT);
@@ -43,10 +43,8 @@ public class UserSettings {
 	public static String validPPTRegex		= "^.*\\.(ppt|pptx)$";
 	public static String validPPEXENameRegex= "^(POWERPNT.EXE|powerpnt.exe)$";
 	
-	public String[] requiredDirs			= {	ppinfscrSetDir,
-												ppinfscrDatadir, 
-												ppinfscrRoot,
-												ppinfscrTmpldir};
+	public static String[] requiredStatic	= {	ppinfscrSetDir, ppinfscrDatadir};
+	public String[] requiredDynamic			= { ppinfscrRoot, ppinfscrTmpldir};
 	
 	public String[] requiredFiles			= {};
 	

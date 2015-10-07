@@ -260,21 +260,30 @@ public class IOHandler {
 	 */
 	public boolean createRequired(String[] dirsPath, String[] filesPath){
 		try {
-			for(String path : dirsPath){
-				File onefile = new File(path);
-				if(!onefile.isDirectory()){
-					out.cInf("Folder: " + onefile + " does not exist - I will create it");
-					onefile.mkdirs();
+			if(dirsPath != null){
+				for(String path : dirsPath){
+					if(!path.isEmpty()){
+						File onefile = new File(path);
+						if(!onefile.isDirectory()){
+							out.cInf("Folder: " + onefile + " does not exist - I will create it");
+							onefile.mkdirs();
+						}
+					}
 				}
 			}
-			for(String path : filesPath){
-				File onefile = new File(path);
-				if(!onefile.isFile()){
-					out.cInf("File: " + onefile + " does not exist - I will create it");
-					onefile.createNewFile();
+			if(filesPath != null){
+				for(String path : filesPath){
+					if(!path.isEmpty()){
+						File onefile = new File(path);
+						if(!onefile.isFile()){
+							out.cInf("File: " + onefile + " does not exist - I will create it");
+							onefile.createNewFile();
+						}
+					}
 				}
 			}
 		} catch (IOException e) {
+			out.cErr("Cannot create required file or folder - IOException", e);
 			e.printStackTrace();
 			return false;
 		}
@@ -366,25 +375,26 @@ public class IOHandler {
 	 */
 	public void saveSettings(GUISettings currentSettings){
 		File settings = new File(UserSettings.ppinfscrSetFile_OUT);
-		if(settings.exists()){
-			try {
-				settings.delete();
+		try {
+			if(!settings.exists()){
 				settings.createNewFile();
-				try {
-					UserSettings uS = new UserSettings();
-					FileOutputStream fout = new FileOutputStream(settings);
-					String newSettings = uS.getNewSettingsContent(currentSettings);
-					fout.write(newSettings.getBytes());
-					fout.close();
-					out.cInf("Settings saved");
-				} catch (FileNotFoundException e) {
-					out.cWarn("Cannot write to settings file - FileNotFoundException",e);
-					e.printStackTrace();
-				}
-			} catch (IOException e) {
-				out.cWarn("Cannot save Settings - IOException",e);
+			}
+			settings.delete();
+			settings.createNewFile();
+			try {
+				UserSettings uS = new UserSettings();
+				FileOutputStream fout = new FileOutputStream(settings);
+				String newSettings = uS.getNewSettingsContent(currentSettings);
+				fout.write(newSettings.getBytes());
+				fout.close();
+				out.cInf("Settings saved");
+			} catch (FileNotFoundException e) {
+				out.cWarn("Cannot write to settings file - FileNotFoundException",e);
 				e.printStackTrace();
 			}
+		} catch (IOException e) {
+			out.cWarn("Cannot save Settings - IOException",e);
+			e.printStackTrace();
 		}
 	}
 }

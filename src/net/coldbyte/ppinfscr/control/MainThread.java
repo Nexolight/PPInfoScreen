@@ -48,14 +48,8 @@ public class MainThread{
 	public void start(){
 		this.uS = new UserSettings();
 		this.io = new IOHandler();
-		if(checkBeforeInit()){
-			if(prepare()){
-				if(checkAfterInit()){
-					createWelcome();
-				}
-			}else{
-				createSettings();
-			}
+		if(prepare()){
+			createWelcome();
 		}else{
 			createSettings();
 		}
@@ -72,7 +66,10 @@ public class MainThread{
 				wm.closeWelcome();
 				wm.closeSettings();
 				stopServices();
-				io.removeAll(new File(uS.getString(Settings.APPLICATION_ROOT)));
+				String approot = uS.getString(Settings.APPLICATION_ROOT);
+				if(!approot.isEmpty()){
+					io.removeAll(new File(approot));
+				}
 				io.removeAll(new File(UserSettings.ppinfscrDatadir));
 				io.saveSettings(uS.getDefaultGUISettings());
 				start();
@@ -96,62 +93,6 @@ public class MainThread{
 				return null;
 			}
 		});
-	}
-	
-	/**
-	 * Use this to make sure that some settings are valid
-	 * @return
-	 */
-	private boolean checkBeforeInit(){
-		GUISettings currentSettings = this.uS.getGUISettings();
-		boolean status = true;
-		String appRoot = currentSettings.getApplicationRoot();
-		if(!io.checkExistence(appRoot)){
-			out.cWarn("Cannot find the application root - please choose an existing folder");
-			status = false;
-		}else{
-			List<File> appRootContent = io.getAll(appRoot);
-			for(File f : appRootContent){
-				if(!f.getName().matches(UserSettings.datedFoldersRegex)){
-					out.cErr("The selected application root contains files which are not part of PPInfoScreen - "
-							+ "Please create and/or select an empty folder");
-					status = false;
-					break;
-				}
-			}
-		}
-		if(!io.checkExistence(currentSettings.getPpExeLocation())){
-			out.cWarn("The PowerPoint executable is unavailable - please set the path manually");
-			status = false;
-		}else{
-			if(!new File(currentSettings.getPpExeLocation()).getName().matches(UserSettings.validPPEXENameRegex)){
-				out.cErr("The executable file does not seem to be the PowerPoint executable (Wrong filename)");
-				status = false;
-			}
-		}
-		return status;
-	}
-	
-	/**
-	 * Use this to make sure that some settings are valid
-	 * @return
-	 */
-	private boolean checkAfterInit(){
-		GUISettings currentSettings = this.uS.getGUISettings();
-		boolean status = true;
-		if(!io.checkExistence(UserSettings.ppinfscrSetDir)){
-			out.cErr("The folder " + UserSettings.ppinfscrSetDir + " was not created but this is required to use the application - Try as administrator");
-			status = false;
-		}
-		if(!io.checkExistence(UserSettings.ppinfscrDatadir)){
-			out.cErr("The folder " + UserSettings.ppinfscrDatadir + " was not created but this is required to use the application - Try as administrator");
-			status = false;
-		}
-		if(!io.checkExistence(UserSettings.ppinfscrSetFile_OUT)){
-			out.cErr("The file " + UserSettings.ppinfscrDatadir + " was not created but this is required to use the application - Try as administrator");
-			status = false;
-		}
-		return status;
 	}
 	
 	/**
@@ -209,19 +150,55 @@ public class MainThread{
 	}
 	
 	/**
-	 * This will do all initial work to make sure the program will run properly
+	 * This will do all initial work to make sure the program will run properly it returns false if something went wrong
 	 * @return
 	 */
 	private boolean prepare(){
-		if (io.createRequired(this.uS.requiredDirs, this.uS.requiredFiles) &&
-			io.extractTemplate(UserSettings.ppinfscrSetFile_JAR, UserSettings.ppinfscrSetFile_OUT) &&
-			io.extractTemplate(UserSettings.ppinfscrOptTmpl_JAR, this.uS.ppinfscrOptTmpl_OUT)){
-			out.cInf("Application structure is ok!");
-			return true;
-		}else{
-			out.cErr("Could not create required files and folders. Please check the base base path of the application and make sure you have write access to them");
+		GUISettings currentSettings = this.uS.getGUISettings();
+		
+		if(!io.createRequired(UserSettings.requiredStatic , null)){
 			return false;
 		}
+		boolean status = true;
+		String appRoot = currentSettings.getApplicationRoot();
+		if(!io.checkExistence(appRoot)){
+			out.cWarn("Cannot find the application root - please choose an existing folder");
+			status = false;
+		}else{
+			List<File> appRootContent = io.getAll(appRoot);
+			for(File f : appRootContent){
+				if(!f.getName().matches(UserSettings.datedFoldersRegex)){
+					out.cErr("The selected application root contains files which are not part of PPInfoScreen - "
+							+ "Please create and/or select an empty folder");
+					status = false;
+					break;
+				}
+			}
+		}
+		if(!io.checkExistence(currentSettings.getPpExeLocation())){
+			out.cWarn("The PowerPoint executable is unavailable - please set the path manually");
+			status = false;
+		}else{
+			if(!new File(currentSettings.getPpExeLocation()).getName().matches(UserSettings.validPPEXENameRegex)){
+				out.cErr("The executable file does not seem to be the PowerPoint executable (Wrong filename)");
+				status = false;
+			}
+		}
+		if(!status){
+			return status;
+		}
+		
+		if(!io.createRequired(this.uS.requiredDynamic , null)){
+			return false;
+		}
+		
+		if (io.extractTemplate(UserSettings.ppinfscrOptTmpl_JAR, this.uS.ppinfscrOptTmpl_OUT)){
+			out.cInf("Application structure is ok!");
+		}else{
+			out.cErr("Could not create required files. Please check the base base path of the application and make sure you have write access to them");
+			status = false;
+		}
+		return status;
 	}
 	
 	/**
