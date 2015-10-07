@@ -1,7 +1,5 @@
 package net.coldbyte.ppinfscr.interfaces;
 
-import java.io.File;
-
 import net.coldbyte.ppinfscr.control.PPBot.PPBotState;
 
 /**
