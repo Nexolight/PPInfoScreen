@@ -10,7 +10,6 @@ import net.coldbyte.ppinfscr.models.GUISettings;
 import net.coldbyte.ppinfscr.settings.UserSettings;
 import net.coldbyte.ppinfscr.settings.UserSettings.Settings;
 import net.coldbyte.ppinfscr.ui.WindowManager;
-import net.coldbyte.ppinfscr.util.Helper;
 
 /**
  * 
@@ -218,11 +217,6 @@ public class MainThread{
 			io.extractTemplate(UserSettings.ppinfscrSetFile_JAR, UserSettings.ppinfscrSetFile_OUT) &&
 			io.extractTemplate(UserSettings.ppinfscrOptTmpl_JAR, this.uS.ppinfscrOptTmpl_OUT)){
 			out.cInf("Application structure is ok!");
-			if(Helper.is64()){
-				System.loadLibrary("jacob-1.18-x64");
-			}else{
-				System.loadLibrary("jacob-1.18-x86");
-			}
 			return true;
 		}else{
 			out.cErr("Could not create required files and folders. Please check the base base path of the application and make sure you have write access to them");
