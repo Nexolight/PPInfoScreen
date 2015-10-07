@@ -103,7 +103,6 @@ public class WindowManager {
 		JPanel p1 = new JPanel();
 		p1.setLayout(mlp1);
 		this.consoleWindow.setContentPane(p1);
-		
 		this.consoleContent = new JTextPane();
 		this.consoleContent.setContentType("text/html");
 		JScrollPane jsp = new JScrollPane(this.consoleContent);
@@ -200,6 +199,7 @@ public class WindowManager {
         Element last = cmdashtml.getParagraphElement(cmdashtml.getLength());
         try {
         	cmdashtml.insertBeforeEnd(last, htmlString);
+        	this.consoleContent.setCaretPosition(this.consoleContent.getDocument().getLength());
         } catch (BadLocationException ex) {
         	out.silentOut("Unable to write to the visual console - BadLocationException");
         } catch (IOException ex) {
