@@ -88,7 +88,7 @@ public class Output {
 	public void cErr(Object input){
 		System.out.println("ERROR: " + input);
 		if(singleOutput.wm != null){
-			singleOutput.wm.appendToConsole(newLine(wrapINF("ERROR: " + input.toString())));
+			singleOutput.wm.appendToConsole(newLine(wrapERR("ERROR: " + input.toString())));
 		}
 	}
 	

@@ -60,7 +60,7 @@ public class Helper {
 	 * @return
 	 */
 	public String[] getPPProcessCmd(){
-		String processname = new File(this.uS.ppexeLocation).getName();
+		String processname = new File(this.uS.getString(Settings.PP_EXE_LOCATION)).getName();
 		String[] ret = UserSettings.tasklistCmds;
 		ret[2] = ret[2].replace("[ppexe]", "\""+processname+"\"");
 		return ret;
@@ -72,7 +72,7 @@ public class Helper {
 	 */
 	public String[] getPPKillCmd(){
 		String[] ret = UserSettings.taskkillCmds;
-		ret[ret.length-1] = ret[ret.length-1].replace("[processname]", new File(this.uS.ppexeLocation).getName());
+		ret[ret.length-1] = ret[ret.length-1].replace("[processname]", new File(this.uS.getString(Settings.PP_EXE_LOCATION)).getName());
 		return ret;
 	}
 	

@@ -54,7 +54,7 @@ public class IOHandler {
 				filename = UUID.randomUUID().toString();
 			}
 			UserSettings uS = new UserSettings();
-			File dst = new File(uS.ppinfscrDatadir + filename);
+			File dst = new File(UserSettings.ppinfscrDatadir + filename);
 			try {
 				RandomAccessFile rf = new RandomAccessFile(file, "r");
 				FileChannel bin = rf.getChannel();
@@ -188,7 +188,7 @@ public class IOHandler {
 		List<PPTContainer> validated = new ArrayList<PPTContainer>();
 		UserSettings uS = new UserSettings();
 		SimpleDateFormat datedfolderformat = new SimpleDateFormat(UserSettings.datedFoldersFormat);
-		List<File> dirs = getAll(uS.ppinfscrSources);
+		List<File> dirs = getAll(uS.getString(Settings.APPLICATION_ROOT));
 		for(File dir : dirs){
 			if(dir.isDirectory()){
 				String dname = dir.getName();
@@ -272,7 +272,6 @@ public class IOHandler {
 	 */
 	public boolean extractTemplate(String pathinjar, String dst){
 		InputStream in = getClass().getResourceAsStream(pathinjar);
-		
 		if(in == null){
 			out.cWarn("Template file in jar "+ pathinjar + " does not exist - please contact the developer");
 			return false;

@@ -13,6 +13,7 @@ import net.coldbyte.ppinfscr.interfaces.IfUpdateListener;
 import net.coldbyte.ppinfscr.io.IOHandler;
 import net.coldbyte.ppinfscr.models.PPTContainer;
 import net.coldbyte.ppinfscr.settings.UserSettings;
+import net.coldbyte.ppinfscr.settings.UserSettings.Settings;
 
 /**
  *
@@ -217,7 +218,7 @@ public abstract class UpdateListener implements IfUpdateListener, IfKillable{
 			}
 			
 		};
-		t.scheduleAtFixedRate(mysrv, 0, this.uS.datedFoldersLookupDelay);
+		t.scheduleAtFixedRate(mysrv, 0, this.uS.getLong(Settings.FOLDER_LOOKUP_DELAY));
 	}
 	
 	/**

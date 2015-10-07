@@ -16,6 +16,7 @@ import net.coldbyte.ppinfscr.interfaces.IfKillable;
 import net.coldbyte.ppinfscr.interfaces.IfPPBot;
 import net.coldbyte.ppinfscr.io.IOHandler;
 import net.coldbyte.ppinfscr.settings.UserSettings;
+import net.coldbyte.ppinfscr.settings.UserSettings.Settings;
 import net.coldbyte.ppinfscr.util.Helper;
 
 /**
@@ -156,7 +157,7 @@ public abstract class PPBot implements IfPPBot, IfKillable{
 				}
 			}
 		};
-		t.schedule(mysrv, 0, this.uS.ppexeStateLookupDelay);
+		t.schedule(mysrv, 0, this.uS.getLong(Settings.PP_STATE_LOOKUP_DELAY));
 	}
 	
 	/**

@@ -1,12 +1,14 @@
 package net.coldbyte.ppinfscr.control;
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import net.coldbyte.ppinfscr.control.UpdateListener.ContainerOfInterest;
 import net.coldbyte.ppinfscr.io.IOHandler;
 import net.coldbyte.ppinfscr.models.GUISettings;
 import net.coldbyte.ppinfscr.settings.UserSettings;
+import net.coldbyte.ppinfscr.settings.UserSettings.Settings;
 import net.coldbyte.ppinfscr.ui.WindowManager;
 import net.coldbyte.ppinfscr.util.Helper;
 
@@ -47,12 +49,16 @@ public class MainThread{
 	public void start(){
 		this.uS = new UserSettings();
 		this.io = new IOHandler();
-		if(prepare()){
-			if(checkSettings()){
-				createWelcome();
+		if(checkBeforeInit()){
+			if(prepare()){
+				if(checkAfterInit()){
+					createWelcome();
+				}
 			}else{
 				createSettings();
 			}
+		}else{
+			createSettings();
 		}
 	}
 	
@@ -68,8 +74,8 @@ public class MainThread{
 				wm.closeSettings();
 				stopServices();
 				io.saveSettings(uS.getDefaultGUISettings());
-				io.removeAll(new File(uS.ppinfscrRoot));
-				io.removeAll(new File(UserSettings.ppinfscrDefaultStruct));
+				io.removeAll(new File(uS.getString(Settings.APPLICATION_ROOT)));
+				io.removeAll(new File(UserSettings.ppinfscrDatadir));
 				start();
 				return null;
 			}
@@ -94,24 +100,59 @@ public class MainThread{
 	}
 	
 	/**
-	 * Use this to make sure that all settings are valid (including paths)
+	 * Use this to make sure that some settings are valid
 	 * @return
 	 */
-	private boolean checkSettings(){
+	private boolean checkBeforeInit(){
 		GUISettings currentSettings = this.uS.getGUISettings();
+		boolean status = true;
+		String appRoot = currentSettings.getApplicationRoot();
+		if(!io.checkExistence(appRoot)){
+			out.cWarn("Cannot find the application root - please choose an existing folder");
+			status = false;
+		}else{
+			List<File> appRootContent = io.getAll(appRoot);
+			for(File f : appRootContent){
+				if(!f.getName().matches(UserSettings.datedFoldersRegex)){
+					out.cErr("The selected application root contains files which are not part of PPInfoScreen - "
+							+ "Please create and/or select an empty folder");
+					status = false;
+					break;
+				}
+			}
+		}
 		if(!io.checkExistence(currentSettings.getPpExeLocation())){
 			out.cWarn("The PowerPoint executable is unavailable - please set the path manually");
-			return false;
+			status = false;
+		}else{
+			if(!new File(currentSettings.getPpExeLocation()).getName().matches(UserSettings.validPPEXENameRegex)){
+				out.cErr("The executable file does not seem to be the PowerPoint executable (Wrong filename)");
+				status = false;
+			}
 		}
-		if(!new File(currentSettings.getPpExeLocation()).getName().matches(UserSettings.validPPEXENameRegex)){
-			out.cWarn("The executable file does not seem to be the PowerPoint executable (Wrong filename)");
-			return false;
+		return status;
+	}
+	
+	/**
+	 * Use this to make sure that some settings are valid
+	 * @return
+	 */
+	private boolean checkAfterInit(){
+		GUISettings currentSettings = this.uS.getGUISettings();
+		boolean status = true;
+		if(!io.checkExistence(UserSettings.ppinfscrSetDir)){
+			out.cErr("The folder " + UserSettings.ppinfscrSetDir + " was not created but this is required to use the application - Try as administrator");
+			status = false;
 		}
-		if(!io.checkExistence(currentSettings.getApplicationRoot())){
-			out.cErr("Cannot find the application root - make sure you have write access to it");
-			return false;
+		if(!io.checkExistence(UserSettings.ppinfscrDatadir)){
+			out.cErr("The folder " + UserSettings.ppinfscrDatadir + " was not created but this is required to use the application - Try as administrator");
+			status = false;
 		}
-		return true;
+		if(!io.checkExistence(UserSettings.ppinfscrSetFile_OUT)){
+			out.cErr("The file " + UserSettings.ppinfscrDatadir + " was not created but this is required to use the application - Try as administrator");
+			status = false;
+		}
+		return status;
 	}
 	
 	/**
@@ -148,6 +189,8 @@ public class MainThread{
 			@Override
 			public Void call() throws Exception {
 				out.cInf("Save settings");
+				GUISettings changedSettings = wm.getSettings();
+				changedSettings.setApplicationRoot(changedSettings.getApplicationRoot());
 				io.saveSettings(wm.getSettings());
 				wm.closeSettings();
 				stopServices();
@@ -172,8 +215,8 @@ public class MainThread{
 	 */
 	private boolean prepare(){
 		if (io.createRequired(this.uS.requiredDirs, this.uS.requiredFiles) &&
-			io.extractTemplate(this.uS.ppinfscrSetFile_JAR, UserSettings.ppinfscrSetFile_OUT) &&
-			io.extractTemplate(this.uS.ppinfscrOptTmpl_JAR, this.uS.ppinfscrOptTmpl_OUT)){
+			io.extractTemplate(UserSettings.ppinfscrSetFile_JAR, UserSettings.ppinfscrSetFile_OUT) &&
+			io.extractTemplate(UserSettings.ppinfscrOptTmpl_JAR, this.uS.ppinfscrOptTmpl_OUT)){
 			out.cInf("Application structure is ok!");
 			if(Helper.is64()){
 				System.loadLibrary("jacob-1.18-x64");

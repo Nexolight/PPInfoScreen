@@ -24,17 +24,15 @@ public class UserSettings {
 	}
 	
 	public static String ppinfscrSetDir 		= System.getProperty("user.home").replace("\\", "/") + "/.PPInfoScreen/";
-	public static String ppinfscrDefaultStruct	= ppinfscrSetDir + "Structure";
+	public static String ppinfscrDatadir		= ppinfscrSetDir + "/data/";
 	public static String ppinfscrSetFile_OUT 	= ppinfscrSetDir + "settings.ini";
 	
-	public String ppinfscrRoot					= getString(Settings.APPLICATION_ROOT);
-	public String ppinfscrSources 				= ppinfscrRoot 		+ "/InformationScreen/";
-	public static String ppinfscrDatadir		= ppinfscrSetDir 	+ "/data/";
-	public String ppinfscrTmpldir 				= ppinfscrSources 	+ "/01.01.2015_1830/";
-	public String ppexeLocation					= getString(Settings.PP_EXE_LOCATION);
+	private String ppinfscrRoot					= getString(Settings.APPLICATION_ROOT);
+	private String ppinfscrTmpldir 				= ppinfscrRoot 	+ "/01.01.2015_1830/";
+	//public String ppexeLocation				= getString(Settings.PP_EXE_LOCATION);
 	
-	public String ppinfscrSetFile_JAR		= "/templates/settings.ini";
-	public String ppinfscrOptTmpl_JAR		= "/templates/example.pptx";
+	public static String ppinfscrSetFile_JAR	= "/templates/settings.ini";
+	public static String ppinfscrOptTmpl_JAR	= "/templates/example.pptx";
 	
 	public String ppinfscrOptTmpl_OUT 		= ppinfscrTmpldir + "example.pptx";
 	public static String jacobDLLx86		= "jacob-1.18-x86";
@@ -46,15 +44,14 @@ public class UserSettings {
 	public static String validPPEXENameRegex= "^(POWERPNT.EXE|powerpnt.exe)$";
 	
 	public String[] requiredDirs			= {	ppinfscrSetDir,
-												ppinfscrDefaultStruct,
-												ppinfscrSources, 
 												ppinfscrDatadir, 
+												ppinfscrRoot,
 												ppinfscrTmpldir};
 	
 	public String[] requiredFiles			= {};
 	
-	public long datedFoldersLookupDelay 	= getLong(Settings.FOLDER_LOOKUP_DELAY);
-	public long ppexeStateLookupDelay 		= getLong(Settings.PP_STATE_LOOKUP_DELAY); //ms
+	//public long datedFoldersLookupDelay 	= getLong(Settings.FOLDER_LOOKUP_DELAY);
+	//public long ppexeStateLookupDelay 		= getLong(Settings.PP_STATE_LOOKUP_DELAY); //ms
 	
 	public static String[] taskkillCmds		= {"cmd.exe", "/C", "taskkill /F /IM [processname]"}; //[ppprocessname] will be replaced automatically
 	public static String ppexeStartupCmds 	= " -S [pptfile]"; //[pptfile] will be replaced automatically

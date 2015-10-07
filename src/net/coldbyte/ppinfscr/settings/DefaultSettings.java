@@ -16,7 +16,7 @@ public class DefaultSettings {
 		
 	}
 
-	protected static final String	ppinfscrRoot	= UserSettings.ppinfscrDefaultStruct;
+	protected static final String	ppinfscrRoot	= "";
 	protected static final String	ppexeLocation	= "";
 	protected static final long datedFoldersLookupDelay 	= 5000; //ms
 	protected static final long ppexeStateLookupDelay 		= 3000; //ms
