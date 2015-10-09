@@ -176,12 +176,15 @@ public class MainThread{
 			}
 		}
 		if(!io.checkExistence(currentSettings.getPpExeLocation())){
-			out.cWarn("The PowerPoint executable is unavailable - please set the path manually");
+			out.cWarn("The PowerPoint or Simpress executable is unavailable - please set the path manually");
 			status = false;
 		}else{
 			if(!new File(currentSettings.getPpExeLocation()).getName().matches(UserSettings.validPPEXENameRegex)){
-				out.cErr("The executable file does not seem to be the PowerPoint executable (Wrong filename)");
+				out.cErr("The executable file does not seem to be the PowerPoint or Simpress executable (Wrong filename)");
 				status = false;
+			}
+			if(new File(currentSettings.getPpExeLocation()).getName().matches(UserSettings.isOpenOfficePRegex)){
+				out.cWarn("You selected the OpenOffice Simpress to show the presentations - please not that this program was designed to use Microsoft PowerPoint. It might not work with Simpress");
 			}
 		}
 		if(!status){

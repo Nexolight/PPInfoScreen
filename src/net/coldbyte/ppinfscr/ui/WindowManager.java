@@ -379,7 +379,7 @@ public class WindowManager {
 		
 		
 		//Powerpoint exe location selection
-		JLabel lblPPExe = new JLabel("Select the POWERPNT.EXE file - (PowerPoint executable)");
+		JLabel lblPPExe = new JLabel("Select the PowerPoint (MicrosoftOffice) or Simpress (OpenOffice) executable)");
 		JTextField txtbPPExe = new JTextField(currentSettings.getPpExeLocation());
 		JButton btnPPExe = new JButton("Change...");
 		btnPPExe.addMouseListener(new MouseListener(){
@@ -387,7 +387,7 @@ public class WindowManager {
 			public void mouseClicked(java.awt.event.MouseEvent e) {
 				JFileChooser fcPPExe = new JFileChooser();
 				fcPPExe.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				fcPPExe.setFileFilter(new FileNameExtensionFilter("POWERPNT.EXE", "exe"));
+				fcPPExe.setFileFilter(new FileNameExtensionFilter("POWERPNT.EXE, SIMPRESS.EXE", "exe"));
 				int fcPPExeStatus = fcPPExe.showOpenDialog(settingsWindow);
 				if(fcPPExeStatus == JFileChooser.APPROVE_OPTION){
 					txtbPPExe.setText(fcPPExe.getSelectedFile().getAbsolutePath().replace("\\", "/"));

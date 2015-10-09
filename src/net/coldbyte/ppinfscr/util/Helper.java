@@ -51,7 +51,15 @@ public class Helper {
 	 */
 	public String getPPStartupCmd(String fullpath){
 		String pploc = "\""+this.uS.getString(Settings.PP_EXE_LOCATION)+"\"".replace("/", "\\");
-		String ppcmd = UserSettings.ppexeStartupCmds.replace("[pptfile]", "\""+fullpath+"\"");
+		String ppcmd = UserSettings.ppexeStartupCmds;
+		ppcmd = ppcmd.replace("[pptfile]", "\""+fullpath+"\"");
+		String processname = new File(this.uS.getString(Settings.PP_EXE_LOCATION)).getName();
+		if(processname.matches(UserSettings.isMicrosoftPRegex)){
+			ppcmd = ppcmd.replace("[fullscreencmd]", UserSettings.isMicrosoftPFParam);
+		}
+		if(processname.matches(UserSettings.isOpenOfficePRegex)){
+			ppcmd = ppcmd.replace("[fullscreencmd]", UserSettings.isOpenOfficePFParam);
+		}
 		return pploc + " " + ppcmd;
 	}
 	
@@ -61,7 +69,7 @@ public class Helper {
 	 */
 	public String[] getPPProcessCmd(){
 		String processname = new File(this.uS.getString(Settings.PP_EXE_LOCATION)).getName();
-		String[] ret = UserSettings.tasklistCmds;
+		String[] ret = UserSettings.tasklistCmds;	
 		ret[2] = ret[2].replace("[ppexe]", "\""+processname+"\"");
 		return ret;
 	}

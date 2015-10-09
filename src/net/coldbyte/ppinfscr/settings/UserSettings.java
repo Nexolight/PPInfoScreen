@@ -29,7 +29,6 @@ public class UserSettings {
 	
 	private String ppinfscrRoot					= getString(Settings.APPLICATION_ROOT);
 	private String ppinfscrTmpldir 				= ppinfscrRoot 	+ "/01.01.2015_1830/";
-	//public String ppexeLocation				= getString(Settings.PP_EXE_LOCATION);
 	
 	public static String ppinfscrSetFile_JAR	= "/templates/settings.ini";
 	public static String ppinfscrOptTmpl_JAR	= "/templates/example.pptx";
@@ -40,20 +39,24 @@ public class UserSettings {
 	
 	public static String datedFoldersRegex	= "^[0-3]{0,1}[0-9]{1}\\.[0-1]{0,1}[0-9]{1}\\.[2-3]{1}[0-9]{3}_[0-2]{0,1}[0-9]{1}[0-5]{0,1}[0-9]{1}$";
 	public static String datedFoldersFormat	= "dd.MM.yyyy_HHmm";
-	public static String validPPTRegex		= "^.*\\.(ppt|pptx)$";
-	public static String validPPEXENameRegex= "^(POWERPNT.EXE|powerpnt.exe)$";
+	public static String validPPTRegex		= "^.*\\.(ppt|pptx|odp)$";
+	public static String validPPEXENameRegex= "^(POWERPNT.EXE|powerpnt.exe|SIMPRESS.EXE|simpress.exe)$";
+	public static String isMicrosoftPRegex	= "^(POWERPNT.EXE|powerpnt.exe)$";
+	public static String isMicrosoftPFParam	= "-S";
+	public static String isOpenOfficePRegex = "^(SIMPRESS.EXE|simpress.exe)$";
+	public static String isOpenOfficePFParam= "-show";
 	
 	public static String[] requiredStatic	= {	ppinfscrSetDir, ppinfscrDatadir};
 	public String[] requiredDynamic			= { ppinfscrRoot, ppinfscrTmpldir};
 	
 	public String[] requiredFiles			= {};
 	
-	//public long datedFoldersLookupDelay 	= getLong(Settings.FOLDER_LOOKUP_DELAY);
-	//public long ppexeStateLookupDelay 		= getLong(Settings.PP_STATE_LOOKUP_DELAY); //ms
-	
 	public static String[] taskkillCmds		= {"cmd.exe", "/C", "taskkill /F /IM [processname]"}; //[ppprocessname] will be replaced automatically
-	public static String ppexeStartupCmds 	= " -S [pptfile]"; //[pptfile] will be replaced automatically
+	public static String ppexeStartupCmds 	= " [fullscreencmd] [pptfile]"; //[fullscreencmd] will be replaced by replaces depending on the used presentation software and [pptfile] will be replaced automatically
 	public static String[] tasklistCmds 	= {"cmd.exe", "/C", "tasklist.exe | find [ppexe] /I"}; //[ppexe] will be replaced automatically
+	
+	public static long thirdPartyPlayPlayPPDelay 	= 8000; //unused - The delay for the fix command
+	public static String[] thirdPartyPlayPPFix		= {""}; //unused - some command which will be executed to show the presentation in fullscreen
 	
 	public long ppNextActionDelay			= getLong(Settings.PP_NEXT_SHEET_DELAY); //ms
 	

@@ -140,7 +140,7 @@ public abstract class PPBot implements IfPPBot, IfKillable{
 								}
 								expectNewFile = false;
 							}else{
-								out.cWarn("PowerPoint closed unexpectedly - reopen latest presentation");
+								out.cWarn("Presentation program closed unexpectedly - reopen latest presentation");
 							}
 							if(this.openedFile != null){
 								try{
@@ -149,6 +149,7 @@ public abstract class PPBot implements IfPPBot, IfKillable{
 									this.processPP = this.pbPP.start();
 									this.stdinPP = new BufferedReader(new InputStreamReader(this.processPP.getInputStream())); //dont remove it will block
 									this.stderrPP = new BufferedReader(new InputStreamReader(this.processPP.getErrorStream())); //dont remove it will block
+									//insert third party fix
 								} catch (IOException e) {
 									out.cErr("Cannot start PowerPoint - IOExeption", e);
 									e.printStackTrace();
