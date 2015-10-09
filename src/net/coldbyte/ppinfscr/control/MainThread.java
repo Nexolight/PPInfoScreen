@@ -168,9 +168,8 @@ public class MainThread{
 			List<File> appRootContent = io.getAll(appRoot);
 			for(File f : appRootContent){
 				if(!f.getName().matches(UserSettings.datedFoldersRegex)){
-					out.cErr("The selected application root contains files which are not part of PPInfoScreen - "
+					out.cWarn("The selected application root contains files which are not part of PPInfoScreen - "
 							+ "Please create and/or select an empty folder");
-					status = false;
 					break;
 				}
 			}
