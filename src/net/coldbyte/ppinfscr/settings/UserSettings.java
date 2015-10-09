@@ -40,11 +40,13 @@ public class UserSettings {
 	public static String datedFoldersRegex	= "^[0-3]{0,1}[0-9]{1}\\.[0-1]{0,1}[0-9]{1}\\.[2-3]{1}[0-9]{3}_[0-2]{0,1}[0-9]{1}[0-5]{0,1}[0-9]{1}$";
 	public static String datedFoldersFormat	= "dd.MM.yyyy_HHmm";
 	public static String validPPTRegex		= "^.*\\.(ppt|pptx|odp)$";
-	public static String validPPEXENameRegex= "^(POWERPNT.EXE|powerpnt.exe|SIMPRESS.EXE|simpress.exe)$";
-	public static String isMicrosoftPRegex	= "^(POWERPNT.EXE|powerpnt.exe)$";
-	public static String isMicrosoftPFParam	= "-S";
-	public static String isOpenOfficePRegex = "^(SIMPRESS.EXE|simpress.exe)$";
-	public static String isOpenOfficePFParam= "-show";
+	public static String validPPEXENameRegex= "^(POWERPNT.EXE|powerpnt.exe|PPTVIEW.EXE|pptview.exe|SIMPRESS.EXE|simpress.exe)$";
+	public static String isMicrosoftOSPRegex	= "^(POWERPNT.EXE|powerpnt.exe)$";
+	public static String isMicrosoftOSPFParam	= "-S";
+	public static String isMicrosoftPPVPRegex	= "^(PPTVIEW.EXE|pptview.exe)$";
+	public static String isMicrosoftPPVPFParam	= "-F";
+	public static String isOpenOfficePRegex 	= "^(SIMPRESS.EXE|simpress.exe)$";
+	public static String isOpenOfficePFParam	= "-invisible -nologo -show";
 	
 	public static String[] requiredStatic	= {	ppinfscrSetDir, ppinfscrDatadir};
 	public String[] requiredDynamic			= { ppinfscrRoot, ppinfscrTmpldir};

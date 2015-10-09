@@ -387,7 +387,7 @@ public class WindowManager {
 			public void mouseClicked(java.awt.event.MouseEvent e) {
 				JFileChooser fcPPExe = new JFileChooser();
 				fcPPExe.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				fcPPExe.setFileFilter(new FileNameExtensionFilter("POWERPNT.EXE, SIMPRESS.EXE", "exe"));
+				fcPPExe.setFileFilter(new FileNameExtensionFilter("POWERPNT.EXE, PPTVIEW.EXE or SIMPRESS.EXE", "exe"));
 				int fcPPExeStatus = fcPPExe.showOpenDialog(settingsWindow);
 				if(fcPPExeStatus == JFileChooser.APPROVE_OPTION){
 					txtbPPExe.setText(fcPPExe.getSelectedFile().getAbsolutePath().replace("\\", "/"));

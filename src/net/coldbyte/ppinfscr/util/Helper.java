@@ -54,8 +54,11 @@ public class Helper {
 		String ppcmd = UserSettings.ppexeStartupCmds;
 		ppcmd = ppcmd.replace("[pptfile]", "\""+fullpath+"\"");
 		String processname = new File(this.uS.getString(Settings.PP_EXE_LOCATION)).getName();
-		if(processname.matches(UserSettings.isMicrosoftPRegex)){
-			ppcmd = ppcmd.replace("[fullscreencmd]", UserSettings.isMicrosoftPFParam);
+		if(processname.matches(UserSettings.isMicrosoftOSPRegex)){
+			ppcmd = ppcmd.replace("[fullscreencmd]", UserSettings.isMicrosoftOSPFParam);
+		}
+		if(processname.matches(UserSettings.isMicrosoftPPVPRegex)){
+			ppcmd = ppcmd.replace("[fullscreencmd]", UserSettings.isMicrosoftPPVPFParam);
 		}
 		if(processname.matches(UserSettings.isOpenOfficePRegex)){
 			ppcmd = ppcmd.replace("[fullscreencmd]", UserSettings.isOpenOfficePFParam);
