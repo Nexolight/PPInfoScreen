@@ -379,7 +379,7 @@ public class WindowManager {
 		
 		
 		//Powerpoint exe location selection
-		JLabel lblPPExe = new JLabel("Select the PowerPoint (MicrosoftOffice) or Simpress (OpenOffice) executable)");
+		JLabel lblPPExe = new JLabel("Select the PowerPoint (MicrosoftOffice) or Simpress (OpenOffice - experimental) executable");
 		JTextField txtbPPExe = new JTextField(currentSettings.getPpExeLocation());
 		JButton btnPPExe = new JButton("Change...");
 		btnPPExe.addMouseListener(new MouseListener(){
