@@ -64,9 +64,11 @@ public class IOHandler {
 				bin.transferTo(0, size, bout);
 				bin.close();
 				bout.close();
+				rf.close();
+				dest.close();
 				return dst;
 			} catch (IOException e2) {
-				// TODO Auto-generated catch block
+				out.cWarn("Cannot create a shadow copy of the given file " + file.getAbsolutePath() + " - IOException",e2);
 				e2.printStackTrace();
 				return null;
 			}
